@@ -1,0 +1,84 @@
+<html>
+
+	<head>
+		<link href="http://fonts.googleapis.com/css?family=Metrophobic" rel="stylesheet" type="text/css">
+		<title> Admin | Student Dashboard </title>
+		
+		<link rel="stylesheet" type="text/css" href="static/css/dss.css">
+		<script type="text/javascript" src="static/js/jquery-1.5.1.min.js"> </script>
+		
+		
+		<script type="text/javascript">
+			function toggle_select_all(){
+				if ($('#select_all_students')[0].checked){
+					$('.student_box').attr('checked','checked')
+				} else {
+					$('.student_box').removeAttr('checked')
+				}
+				
+			}
+			
+			function choose_action(){
+				var action = '';
+				var elements = $('#main_form')[0]['action']
+				for (var i in elements){
+					if (elements[i].checked){
+						action = elements[i].value
+						break;
+					}
+				}
+				
+				
+				if (action == ''){
+					return false;
+				} else {
+					$('#main_form').attr('action', action);
+					return true;
+				}
+				
+			}
+		</script>
+	</head>
+	
+	<body>
+		<h1> Admin | Student Dashboard </h1>
+		
+		<h3> All Students </h3>
+		Select all:
+		<ul>
+			<li><input type="button" value="Students that must give talk next semester" onclick="alert(TODO)"/> </li>
+			<li><input type="button" value="Exempt students" onclick="alert(TODO)"/> </li>
+			<li><input type="button" value="Students that have not responded to latest email" onclick="alert(TODO)"/> </li>
+		</ul>
+		
+		
+		<form id="main_form" method="post" onsubmit="return choose_action()">
+			{% csrf_token %}
+			<table>
+				<tr>
+					<th> <input type="checkbox" id="select_all_students" onchange="toggle_select_all()" /> </th>
+					<th> Name </th>
+					<th> Advisor (s) </th>
+					<th> Last Email Sent </th>
+					<th> Responded? </th>
+				</tr>
+			
+				{% for s in students %}
+				<tr>
+					<td class="center"> <input type="checkbox" name="{{s.id}}box" class="student_box"/> </td>
+					<td> {{s.name}} </td>
+					<td> {{s.all_advisors}} </td>
+					<td class="center"> {{s.most_recent_email}} </td>
+					<td class="center"> {{s.responded|yesno:"Yes, No"}} </td>
+				</tr>
+				{% endfor %}
+			</table>
+			
+			<p><input type="radio" id="email_button" name="action" value="email_students" checked/>  <label for="email_button" > Email Students </label> </p>
+			<p><input type="radio" id="schedule_button" name="action" value="schedule_students" />  <label for="schedule_button" > Schedule Students </label> </p>
+			
+			<p><input type="submit" /></p>
+		</form>
+	</body>
+	
+</html>

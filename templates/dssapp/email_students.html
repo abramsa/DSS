@@ -1,0 +1,140 @@
+<html>
+
+	<head>
+		<link href="http://fonts.googleapis.com/css?family=Metrophobic" rel="stylesheet" type="text/css">
+		<title> Admin | Email Students </title>
+		
+		
+		<link rel="stylesheet" type="text/css" href="static/css/dss.css">
+		<script type="text/javascript" src="static/js/jquery-1.5.1.min.js"> </script>
+		
+		
+		<script type="text/javascript">
+			function update_preview(){
+				var student_id = {% for s in students %}{% if forloop.first %}{{s.id}}{%endif%} {%endfor%};
+				var template = $('#template')[0].value;
+				template = template.replace(/\n/g, '<br/>')
+
+				$.ajax({
+				  url: "render_email_template",
+				  context: document.body,
+				  data: "student_id=" + student_id + '&template=' + template,
+				  success: function(msg){
+				    $('#preview')[0].innerHTML = msg
+				  }
+				});
+			}
+			
+			function add_student_name(){
+				var value = $('#template').val();
+			    $('#template').val(value+'\{\{student.name\}\}');
+			}
+			
+			function add_advisor_name(){
+				var value = $('#template').val();
+			    $('#template').val(value+'\{\{student.all_advisors\}\}');
+			}
+			
+			function update_template(){
+				var template_selected = $('#template_kind')[0].value;
+				
+				{% for t in templates %}
+				if (template_selected == "{{t.id}}"){
+					$('#subject_line')[0].value = "{{t.subject}}";
+					var text =  "{{t.template|safe}}"
+					text = text.replace(/@NEWLINE@/g, '\n')
+					text = text.replace(/@CARRAIGE@/g, '\r')
+					$('#template')[0].value = text
+					$('#template_name').css('visibility', 'hidden')
+				}
+				{% endfor %}
+				
+				if (template_selected == "custom"){
+					$('#subject_line')[0].value = "";
+					$('#template')[0].value = ""
+					$('#template_name').css('visibility', 'visible')
+				}
+				
+			}
+			
+			
+			setInterval(update_preview, 1000);
+		</script>
+	</head>
+	
+	<body onload="update_template()">
+		
+		<h1> Admin | Email Students </h1>
+		<form action="send_email" method="post">
+			{% csrf_token %}
+			
+			<div class="row">
+				<span class="row_title">
+					Students:
+				</span>
+		
+				<span class="row_value">
+					{% for student in students %}
+						{{student.name}}{% if forloop.last %}{% else %},{% endif %}
+						<input type="hidden" name="student{{student.id}}" value="on">
+					{% endfor %}
+				</span>
+			</div>
+		
+			<div class="row">
+				<span class="row_title">
+					Email Template:
+				</span>
+		
+				<span class="row_value">
+					<select id="template_kind" name="template_kind" onchange="update_template()">
+						{% for template in templates %}
+							<option value="{{template.id}}">{{template.name}}</option>
+						{% endfor %}
+						<option value="custom"> &lt; Custom &gt; </option}>
+						
+					</select>
+					<span id="template_name">Template Name: <input type="text" name="template_name" value=""></span>
+				</span>
+			</div>
+		
+			<div class="row">
+				<span class="row_title">
+					Subject:
+				</span>
+		
+				<span class="row_value">
+					<input type="text" name="subject_line" id="subject_line">
+				</span>
+			</div>
+		
+			<div class="row">
+				<div id="template_box">
+					<span class="row_title">
+					Template: <input type="button" value="Student name" onclick="add_student_name()">
+							  <input type="button" value="Advisor's name(s)" onclick="add_advisor_name()">
+					<br/>
+					</span>
+				
+					<textarea id="template" name="template" onkeydown="update_preview()"> </textarea>
+				</div>
+			
+				<div id="preview_box">
+					<span class="row_title">
+					Preview:
+					</span>
+					<div id="preview"></div>
+				</div>
+			</div>
+			
+			<div class="clear"></div>
+			
+			<input type="submit" value="Send Mail">
+		</form>
+		
+		
+		
+		
+	</body>
+	
+</html>

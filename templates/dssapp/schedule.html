@@ -1,0 +1,143 @@
+<html>
+
+<head>
+	<link href='http://fonts.googleapis.com/css?family=Metrophobic' rel='stylesheet' type='text/css'>
+	
+	<title>DSS Schedule</title>
+	
+	
+	<link rel="stylesheet" type="text/css" href="static/css/dss.css">
+	<script type="text/javascript" src="static/js/jquery-1.5.1.min.js"> </script>
+	
+	
+	<script type="text/javascript">
+		function toggle_talk(talk_id){
+			// find out if we have to hide or show the object.
+			var current_text = $('#talk' + talk_id + '_button').html()
+			if (current_text == '[+]'){
+				expand_talk(talk_id)
+			} else {
+				hide_talk(talk_id)
+			}
+		
+		}
+		
+		function expand_talk(talk_id){
+			$('#talk' + talk_id + '_button').html('[-]');
+			$('#talk' + talk_id).css('display', 'block')
+		}
+		
+		function hide_talk(talk_id){
+			$('#talk' + talk_id + '_button').html('[+]');
+			$('#talk' + talk_id).css('display', 'none')
+		}
+		
+		function selection_change(){
+			var page = "schedule?semester=" + $('#goto_semester')[0].value;
+			document.location.href = page;
+		}
+	</script>
+</head>
+
+<body>
+
+	<h1> DSS Schedule
+		{% ifequal semester.month 1 %} for Spring {% else %}
+		{% ifequal semester.month 6 %} for Summer {% else %}
+		{% ifequal semester.month 9 %} for Fall {% endifequal %}{% endifequal %}{% endifequal %}
+		{{semester.year}}
+		</h1>
+		
+	<p> Go to
+		<select onchange="selection_change()" id="goto_semester">
+			{% for s in all_semesters %}
+				<option value="{{s.year}}.{{s.month}}"{% ifequal s semester %} selected{% endifequal %}>
+					{% ifequal s.month 1 %} Spring {% else %}
+					{% ifequal s.month 6 %} Summer {% else %}
+					{% ifequal s.month 9 %} Fall {% endifequal %}{% endifequal %}{% endifequal %}
+					{{s.year}}
+
+				</option>
+			{% endfor %}
+		</select>.
+	</p>
+
+	{% for event in events %}
+		<div class="event">
+			<div class="event_header">
+				<div class="event_date">
+					&nbsp; {{ event.timestamp }}
+				</div>
+				
+				<div class="event_type">
+					{{ event.event_type }} &nbsp;
+				</div>
+			</div>
+			
+			<div class="clear"></div>
+			
+			<div class="event_description">
+				{% ifequal event.event_type "DSS" %}
+				<div class="speakers">
+					Speakers:
+					{% for talk in event.talks.all %}
+					    <div class="talk">
+							{{talk.student.name}}
+							{% if talk.title %}
+							<span id="talk{{talk.id}}_button" onclick="toggle_talk({{talk.id}})">[+]</span>
+							<div class="talk_description" id="talk{{talk.id}}">
+								<div class="talk_title">{{talk.title}}</div>
+								<div class="abstract">
+									{% autoescape off %}
+									{{talk.abstract_name}}
+									{% endautoescape %}
+								</div>
+								<div class="advisorlink">
+									{{talk.student.name}} is advised by 
+									{% for advisor in talk.student.advisors.all %}
+										{% if forloop.first %}
+										{% else %}
+										and
+										{% endif %}
+										{{advisor.name}}{% if forloop.last %}.{% endif %}
+									{% endfor %}
+								</div>
+							</div>
+							{% endif %}
+						</div>
+					{% endfor %}
+				</div>
+				
+				
+				<div class="judges">
+					Judges:
+					{% for judge in event.judges.all %}
+						<div class="judge">
+					    {{judge.name}}
+						</div>
+					{% endfor %}
+				</div>
+				<div class="clear"></div>
+				
+				{% endifequal %}
+				
+				{% ifequal event.event_type "Break" %}
+					{% if event.title %}
+						There will be no seminar due to {{event.title}}.
+					{% endif %}
+				{% endifequal %}
+				
+				
+			</div>
+		</div>
+	{% endfor %}
+	
+	
+	
+	
+	{% if error %}
+		<div id="error">{{error}}</div>
+	{% endif %}
+
+</body>
+</html>

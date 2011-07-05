@@ -1,0 +1,247 @@
+<html>
+
+<head>
+	<link href='http://fonts.googleapis.com/css?family=Metrophobic' rel='stylesheet' type='text/css'>
+	
+	<title>Admin | DSS Schedule</title>
+	
+	
+	<link type="text/css" href="static/css/redmond/jquery-ui-1.8.13.custom.css" rel="stylesheet" />	
+	<link rel="stylesheet" type="text/css" href="static/css/dss.css">
+	
+	
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+	
+	
+	<script type="text/javascript">
+		function toggle_talk(talk_id){
+			// find out if we have to hide or show the object.
+			var current_text = $('#talk' + talk_id + '_button').html()
+			if (current_text == '[+]'){
+				expand_talk(talk_id)
+			} else {
+				hide_talk(talk_id)
+			}
+		
+		}
+		
+		function expand_talk(talk_id){
+			$('#talk' + talk_id + '_button').html('[-]');
+			$('#talk' + talk_id).css('display', 'block')
+		}
+		
+		function hide_talk(talk_id){
+			$('#talk' + talk_id + '_button').html('[+]');
+			$('#talk' + talk_id).css('display', 'none')
+		}
+		
+		function selection_change(){
+			var page = "admin_schedule?semester=" + $('#goto_semester')[0].value;
+			document.location.href = page;
+		}
+		
+		// validates that the time is of the form hh:mm(am|pm)
+		function validate_time(){
+			var time = $('#time')[0].value;
+			if (!time.match(/\d\d:\d\d(AM|PM)/)){
+				$('#time_validation').html('Time must be of form hh:mm(AM|PM).')
+				return false;
+			}
+			
+			var hour = time.substr(0,2);
+			var minute = time.substr(3,2);
+			if (hour < 1 || hour > 12 || minute < 0 || minute > 59){
+				$('#time_validation').html('Hours or minutes out of range.')
+				return false;
+			}
+			
+			$('#time_validation').html('')
+			return true;
+			
+		}
+		
+		// if the event type is for a break, make the user specify it.
+		function toggle_event_type(){
+			var event_type = $('#event_type')[0].value;
+			
+			var default_break = {% ifequal semester.month 1 %} "Spring Break" {% else %}
+								{% ifequal semester.month 6 %} "Independence Day" {% else %}
+								{% ifequal semester.month 9 %} "Thanksgiving" {% endifequal %}{% endifequal %}{% endifequal %}
+			
+			
+			if (event_type == 'Break'){
+				$('#break_form').css('display', 'inline');
+				$('#event_title')[0].value = default_break;
+			} else {
+				$('#break_form').css('display', 'none');
+				$('#event_title')[0].value = '';				
+			}
+		}
+		
+		$(function() {
+			    var minDate = new Date({{semester.year}}, {{semester.month}} - 1, 1);
+			    var maxDate = new Date({{semester.year}},	
+				    {% ifequal semester.month 1 %} 4,31 {% else %}
+					{% ifequal semester.month 6 %} 7,31 {% else %}
+					{% ifequal semester.month 9 %} 11,30 {% endifequal %}{% endifequal %}{% endifequal %});
+				$( "#datepicker" ).datepicker({ minDate: minDate, maxDate: maxDate});
+				
+				toggle_event_type();
+		});
+	</script>
+</head>
+
+<body>
+
+	<h1> Admin | DSS Schedule
+		{% ifequal semester.month 1 %} for Spring {% else %}
+		{% ifequal semester.month 6 %} for Summer {% else %}
+		{% ifequal semester.month 9 %} for Fall {% endifequal %}{% endifequal %}{% endifequal %}
+		{{semester.year}}
+		</h1>
+		
+	<ul>
+	<li> Go to
+		<select onchange="selection_change()" id="goto_semester">
+			{% for s in all_semesters %}
+				<option value="{{s.year}}.{{s.month}}"{% ifequal s semester %} selected{% endifequal %}>
+					{% ifequal s.month 1 %} Spring {% else %}
+					{% ifequal s.month 6 %} Summer {% else %}
+					{% ifequal s.month 9 %} Fall {% endifequal %}{% endifequal %}{% endifequal %}
+					{{s.year}}
+
+				</option>
+			{% endfor %}
+		</select>.
+	</li>
+
+	<li> <form action="create_schedule" method="post">
+			{% csrf_token %}
+		 	Make new schedule for 
+			<select name="season">
+				<option value="spring" selected>Spring</option>
+				<option value="fall">Fall</option>
+				<option value="summer">Summer</option>
+			</select>
+			<input type="text" name="year" value="2011" />.
+			<input type="submit" />
+		</form>
+	</li>
+	
+	<li> <form action="create_event" onsubmit="return validate_time();" method="post">
+			{% csrf_token %}
+			Create a new 
+			<select onchange="toggle_event_type()" id="event_type" name="event_type">
+				<option value="DSS">DSS</option>
+				<option value="Hot Topics">Hot Topics</option>
+				<option value="Break">Break</option>
+			</select> event for
+			<input id="datepicker" name="date" value="0{{semester.month}}/01/{{semester.year}}">
+			<input type="text" name="time" id="time" value="12:30PM" />.
+			
+			<span id="break_form">The break is for <input type="text" id="event_title" name="event_title" value="">.</span>
+			<input type="submit" />
+		</form> 
+		<span id="time_validation" class="error"></span>
+		</p>
+		
+		</li> 
+		
+		</ul>
+		
+	
+	<p>Note: If a student has been registered for a DSS Event, that event cannot be deleted. </p>
+			
+	
+	
+	{% for event in events %}
+		<div class="event">
+			<div class="event_header">
+				<div class="event_date">
+					&nbsp; {{ event.timestamp }}
+				</div>
+				
+				
+					<div class="event_type">
+						{{ event.event_type }} &nbsp;
+						
+						<form action="delete_event" method="post" class="delete_button">
+							{% csrf_token %}
+							<input type="hidden" name="event_id" value="{{event.id}}" />
+							<input type="submit" value="Delete this event" {% if event.deletable %}{% else %}disabled{% endif %}/>
+						</form>
+					</div>
+					
+
+				</form>
+				
+			</div>
+			
+			<div class="clear"></div>
+			
+			<div class="event_description">
+				{% ifequal event.event_type "DSS" %}
+				<div class="speakers">
+					Speakers:
+					{% for talk in event.talks.all %}
+					    <div class="talk">
+							{{talk.student.name}}
+							{% if talk.title %}
+							<span id="talk{{talk.id}}_button" onclick="toggle_talk({{talk.id}})">[+]</span>
+							<div class="talk_description" id="talk{{talk.id}}">
+								<div class="talk_title">{{talk.title}}</div>
+								<div class="abstract">
+									{% autoescape off %}
+									{{talk.abstract_name}}
+									{% endautoescape %}
+								</div>
+								<div class="advisorlink">
+									{{talk.student.name}} is advised by 
+									{% for advisor in talk.student.advisors.all %}
+										{% if forloop.first %}
+										{% else %}
+										and
+										{% endif %}
+										{{advisor.name}}{% if forloop.last %}.{% endif %}
+									{% endfor %}
+								</div>
+							</div>
+							{% endif %}
+						</div>
+					{% endfor %}
+				</div>
+				
+				
+				<div class="judges">
+					Judges:
+					{% for judge in event.judges.all %}
+						<div class="judge">
+					    {{judge.name}}
+						</div>
+					{% endfor %}
+				</div>
+				<div class="clear"></div>
+				
+				{% endifequal %}
+				
+				{% ifequal event.event_type "Break" %}
+					{% if event.title %}
+						There will be no seminar due to {{event.title}}.
+					{% endif %}
+				{% endifequal %}
+				
+				
+			</div>
+		</div>
+	{% endfor %}
+	
+	
+	
+	
+	{% if error %}
+		<div id="error">{{error}}</div>
+	{% endif %}
+
+</body>
+</html>
