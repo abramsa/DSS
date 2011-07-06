@@ -84,7 +84,7 @@
 					    <div class="talk">
 							{{talk.student.name}}
 							{% if talk.title %}
-							<span id="talk{{talk.id}}_button" onclick="toggle_talk({{talk.id}})">[+]</span>
+							<span id="talk{{talk.id}}_button" onclick="toggle_talk({{talk.id}})" class="clickable">[+]</span>
 							<div class="talk_description" id="talk{{talk.id}}">
 								<div class="talk_title">{{talk.title}}</div>
 								<div class="abstract">

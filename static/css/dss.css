@@ -120,3 +120,5 @@ div.ui-datepicker{
     width: 475px;
     border: 1px solid gray;
 }
+
+.clickable:hover { cursor: pointer;}
