@@ -20,14 +20,18 @@ urlpatterns = patterns('',
     (r'^$', dssapp.views.schedule),
     (r'^schedule$', dssapp.views.schedule),
     (r'^schedule_preference$', dssapp.views.schedule_preference),
+    (r'^message$', dssapp.views.message),
     
     
     (r'^admin_schedule$', dssapp.views.admin_schedule),
     (r'^student_dashboard$', dssapp.views.student_dashboard),
+    (r'^admin_preferences$', dssapp.views.admin_preferences),
         
     (r'^create_schedule$', dssapp.views.create_schedule),
     (r'^create_event$', dssapp.views.create_event),
     (r'^delete_event$', dssapp.views.delete_event),
+    (r'^submit_preferences$', dssapp.views.submit_preferences),
+    
     
     (r'^email_students$', dssapp.views.email_students),
     (r'^render_email_template$', dssapp.views.render_email_template),

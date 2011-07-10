@@ -10,13 +10,13 @@ class Semester(models.Model):
 		return str(self.year) + '.' + str(self.month)
 		
 	def season(self):
-	    seasons = {1: "Spring", 6: "Summer", 9: "Fall", 12: "Winter"}
-	    if self.month in seasons:
-	        return seasons[self.month]
-	    else:
-	        d = datetime(month=self.month, year=self.year, day=1)
-	        return d.strftime('%B')
-	    
+		seasons = {1: "Spring", 6: "Summer", 9: "Fall", 12: "Winter"}
+		if self.month in seasons:
+			return seasons[self.month]
+		else:
+			d = datetime(month=self.month, year=self.year, day=1)
+			return d.strftime('%B')
+		
 
 class Advisor(models.Model):
 	name = models.CharField(null=False, max_length=100)
@@ -40,18 +40,19 @@ class Student(models.Model):
 		return self.name
 		
 	def all_advisors(self):
-	    s = ""
-	    advisors = self.advisors.all()
-	    for i in range(len(advisors)):
-	        s += advisors[i].name
-	        if (len(advisors) == 2 and i == 0):
-	            s += " and "
-	        elif (i < len(advisors) - 2):
-	            s += ", "
-	        elif (i == len(advisors) - 2):
-	            s += ", and "
-	    return s
-	        
+		s = ""
+		advisors = self.advisors.all()
+		for i in range(len(advisors)):
+			s += advisors[i].name
+			if (len(advisors) == 2 and i == 0):
+				s += " and "
+			elif (i < len(advisors) - 2):
+				s += ", "
+			elif (i == len(advisors) - 2):
+				s += ", and "
+		return s
+			
+		
 		
 		
 class Talk(models.Model):
@@ -65,6 +66,8 @@ class Talk(models.Model):
 	def abstract_name(self):
 		return self.abstract.replace(r'\n','<br/>').replace('\\\'','\'' )
 
+
+
 class Event(models.Model):
 	timestamp = models.DateTimeField(null=True)
 	semester = models.ForeignKey(Semester)
@@ -77,6 +80,17 @@ class Event(models.Model):
 	def __str__(self):
 		return self.event_type + " on " + self.timestamp.strftime('%b %d %Y ')
 	
+class TalkPreference(models.Model):
+	student = models.ForeignKey(Student)
+	event = models.ForeignKey(Event)
+	preference = models.CharField(null = False, max_length = 25)
+	
+	def __str__(self):
+	    return str(self.student) + "'s preference for event " + str(self.event) + ": " + self.preference
+	    
+	def color(self):
+	    colors = {'prefer': 'green', 'available': white, 'cannot': red}
+
 class EmailTemplate(models.Model):
 	template = models.TextField()
 	subject = models.CharField(max_length=200)

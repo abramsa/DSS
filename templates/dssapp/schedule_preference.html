@@ -1,6 +1,6 @@
 {% extends "dssapp/base.html" %}
 
-{% block title %}Preferences{% endblock %}
+{% block title %}DSS Preferences{% endblock %}
 
 {% block pagetitle %}  
 	Preferences for {{semester.season}}
@@ -14,5 +14,54 @@
 
 {% block content %}
 
+<p> It's time to schedule your DSS talk!  Below are the dates you can give your talk.  Please make sure that both you and your advisor(s) are available during the days you specify.</p>
+
+<p> Please note that if you
+	do not fill out this form in a timely fashion, <span class="emph">we reserve the right to schedule you 
+    during any of these days.</span> </p>
+
+	
+	<div class="clear"> </div>
+		
+	<form action="submit_preferences" method="post">
+		{% csrf_token %}
+		<input type="hidden" name="student_id" value="{{student.id}}" />
+		
+		{% for event in events %}
+			<div class="event">
+				<div class="event_header">
+					<div class="event_date">
+						&nbsp; {{ event.timestamp }}
+					</div>
+				
+					<div class="event_type"></div>
+				</div>
+			
+				<div class="clear"> </div>
+			
+				<div class="event_description">
+			
+					<p>
+						<input id="{{event.id}}prefer" type="radio" name="{{event.id}}preference" value="prefer"/> 
+						<label for="{{event.id}}prefer"> I <span class="prefer">prefer</span> to give my talk this date. </label> 
+					</p>
+				
+					<p>
+						<input id="{{event.id}}available" type="radio" name="{{event.id}}preference" value="available" checked/> 
+						<label for="{{event.id}}available"> I am available to give my talk this date. </label> 
+					</p>
+				
+					
+					<p>
+						<input id="{{event.id}}cannot" type="radio" name="{{event.id}}preference" value="cannot"/> 
+						<label for="{{event.id}}cannot"> I <span class="reject">cannot</span> give my talk this date. </label>
+					</p>
+
+				</div>
+			</div>
+		{% endfor %}
+		
+		<input type="submit">
+	</form>
 
 {% endblock %}

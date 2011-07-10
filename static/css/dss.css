@@ -122,3 +122,44 @@ div.ui-datepicker{
 }
 
 .clickable:hover { cursor: pointer;}
+
+.emph {
+    font-style: italic;
+    
+}
+
+.prefer {
+    color: green;
+}
+
+.reject {
+    color: red;
+}
+
+.cell {
+    min-width: 30px;
+    min-height: 30px;
+}
+
+.none_background {
+    background: #3399CC;
+    border: 1px solid black;
+}
+
+.cannot_background {
+    background: #ff6666;
+    border: 1px solid black;
+    
+}
+
+.available_background {
+    background: white;
+    border: 1px solid black;
+    
+}
+
+.prefer_background {
+    background: #66cc66;
+    border: 1px solid black;
+    
+}
