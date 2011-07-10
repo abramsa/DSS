@@ -147,7 +147,7 @@ def schedule_preference(request):
     semester = string_to_semester(semester_str)
     
     student_key = request.GET['student_key']
-    student = Student.objects.get(web_key=web_key)
+    student = get_object_or_404(Student, web_key=student_key)
     return render_to_response('dssapp/schedule_preference.html', {'semester': semester, 'student': student},
                               context_instance=RequestContext(request))
     

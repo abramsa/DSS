@@ -1,7 +1,5 @@
 from django.db import models
-
-
-
+from datetime import datetime
 
 
 class Semester(models.Model):
@@ -10,6 +8,15 @@ class Semester(models.Model):
 	
 	def __str__(self):
 		return str(self.year) + '.' + str(self.month)
+		
+	def season(self):
+	    seasons = {1: "Spring", 6: "Summer", 9: "Fall", 12: "Winter"}
+	    if self.month in seasons:
+	        return seasons[self.month]
+	    else:
+	        d = datetime(month=self.month, year=self.year, day=1)
+	        return d.strftime('%B')
+	    
 
 class Advisor(models.Model):
 	name = models.CharField(null=False, max_length=100)

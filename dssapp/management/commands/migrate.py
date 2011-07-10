@@ -3,6 +3,7 @@ from dss.dssapp.models import *
 from dss.dssapp.util import *
 import re
 from datetime import *
+import random
 
 def displaymatch(match):
     if match is None:
@@ -83,7 +84,7 @@ class Command(BaseCommand):
                     my_advisor = int(match.groups()[5])
                     my_semester = match.groups()[6]
                     my_active = match.groups()[7] == '1'
-                    my_web_key = match.groups()[8]
+                    my_web_key = random.randint(10**9,10**10)  # random 10-digit number
                     
                     advisor = Advisor.objects.get(id=my_advisor)
                     semester = string_to_semester(my_semester)

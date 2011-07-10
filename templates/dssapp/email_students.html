@@ -1,14 +1,12 @@
-<html>
+{% extends "dssapp/base.html" %}
 
-	<head>
-		<link href="http://fonts.googleapis.com/css?family=Metrophobic" rel="stylesheet" type="text/css">
-		<title> Admin | Email Students </title>
-		
-		
-		<link rel="stylesheet" type="text/css" href="static/css/dss.css">
-		<script type="text/javascript" src="static/js/jquery-1.5.1.min.js"> </script>
-		
-		
+{% block title %} Admin | Email Students {% endblock %}
+
+{% block pagetitle %}  
+	Admin | Email Students
+{%endblock%}
+	
+{% block head %}
 		<script type="text/javascript">
 			function update_preview(){
 				var student_id = {% for s in students %}{% if forloop.first %}{{s.id}}{%endif%} {%endfor%};
@@ -60,11 +58,13 @@
 			
 			setInterval(update_preview, 1000);
 		</script>
-	</head>
-	
-	<body onload="update_template()">
+
+{% endblock %}
+
+{% block onload %}update_template(){%endblock%}
+
+{% block content %}
 		
-		<h1> Admin | Email Students </h1>
 		<form action="send_email" method="post">
 			{% csrf_token %}
 			
@@ -132,9 +132,4 @@
 			<input type="submit" value="Send Mail">
 		</form>
 		
-		
-		
-		
-	</body>
-	
-</html>
+{% endblock %}

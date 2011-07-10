@@ -3,11 +3,7 @@
 {% block title %} Admin | DSS Schedule {% endblock %}
 
 {% block pagetitle %}  
-	Admin | DSS Schedule
-	{% ifequal semester.month 1 %} for Spring {% else %}
-	{% ifequal semester.month 6 %} for Summer {% else %}
-	{% ifequal semester.month 9 %} for Fall {% endifequal %}{% endifequal %}{% endifequal %}
-	{{semester.year}} 
+	Admin | DSS Schedule for {{semester.season}} {{semester.year}}
 {%endblock%}
 	
 {% block head %}	
@@ -96,9 +92,7 @@
 		<select onchange="selection_change()" id="goto_semester">
 			{% for s in all_semesters %}
 				<option value="{{s.year}}.{{s.month}}"{% ifequal s semester %} selected{% endifequal %}>
-					{% ifequal s.month 1 %} Spring {% else %}
-					{% ifequal s.month 6 %} Summer {% else %}
-					{% ifequal s.month 9 %} Fall {% endifequal %}{% endifequal %}{% endifequal %}
+					{{s.season}}
 					{{s.year}}
 
 				</option>

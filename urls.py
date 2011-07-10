@@ -19,6 +19,9 @@ urlpatterns = patterns('',
     
     (r'^$', dssapp.views.schedule),
     (r'^schedule$', dssapp.views.schedule),
+    (r'^schedule_preference$', dssapp.views.schedule_preference),
+    
+    
     (r'^admin_schedule$', dssapp.views.admin_schedule),
     (r'^student_dashboard$', dssapp.views.student_dashboard),
         
