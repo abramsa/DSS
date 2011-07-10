@@ -110,6 +110,18 @@ def email_students(request):
         t.template = t.template.replace('\n','@NEWLINE@').replace('\r','@CARRAIGE@').replace('{','\{').replace('}','\}').replace("'","\\'").replace('"','\\"')
     return render_to_response('dssapp/email_students.html', {'students': students, 'templates': templates},
                               context_instance=RequestContext(request))
+                              
+def schedule_students(request):
+    students = []
+    for param in request.POST:
+        if param.endswith('box'):
+            student_id = int(param.replace('box', ''))
+            students.append(Student.objects.get(id=student_id))
+            
+    semester_str = '2011.09'
+    semester = string_to_semester(semester_str)
+    
+    schedule_semester(semester, students)
     
 def send_email(request):
     template = request.POST['template']
@@ -137,8 +149,8 @@ def send_email(request):
             email_content = Template(template).render(Context({'student': student}))
             assert student.email == 'austin.abrams@gmail.com'
             
-            #email = EmailMessage(subject, email_content, to=[student.email])
-            #email.send()
+            email = EmailMessage(subject, email_content, to=[student.email])
+            email.send()
             
     return HttpResponseRedirect('student_dashboard')
             
@@ -303,7 +315,7 @@ def submit_preferences(request):
         talk_preference.save()
         
     return HttpResponseRedirect("/message?msg=prefsubmit")
-    
+
     
     
     

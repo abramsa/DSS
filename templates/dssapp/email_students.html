@@ -12,6 +12,7 @@
 				var student_id = {% for s in students %}{% if forloop.first %}{{s.id}}{%endif%} {%endfor%};
 				var template = $('#template')[0].value;
 				template = template.replace(/\n/g, '<br/>')
+				template = template.replace('&', '%26')
 
 				$.ajax({
 				  url: "render_email_template",

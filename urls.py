@@ -26,6 +26,7 @@ urlpatterns = patterns('',
     (r'^admin_schedule$', dssapp.views.admin_schedule),
     (r'^student_dashboard$', dssapp.views.student_dashboard),
     (r'^admin_preferences$', dssapp.views.admin_preferences),
+    (r'^schedule_students$', dssapp.views.schedule_students),
         
     (r'^create_schedule$', dssapp.views.create_schedule),
     (r'^create_event$', dssapp.views.create_event),
