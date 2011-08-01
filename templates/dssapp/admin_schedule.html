@@ -79,12 +79,12 @@
 					{% ifequal semester.month 6 %} 7,31 {% else %}
 					{% ifequal semester.month 9 %} 11,30 {% endifequal %}{% endifequal %}{% endifequal %});
 				$( "#datepicker" ).datepicker({ minDate: minDate, maxDate: maxDate});
-				
 				toggle_event_type();
 		});
 	</script>
 	
 {% endblock %}
+		
 		
 {% block content %}
 	<ul>

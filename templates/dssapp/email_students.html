@@ -36,7 +36,6 @@
 			
 			function update_template(){
 				var template_selected = $('#template_kind')[0].value;
-				
 				{% for t in templates %}
 				if (template_selected == "{{t.id}}"){
 					$('#subject_line')[0].value = "{{t.subject}}";
@@ -56,13 +55,15 @@
 				
 			}
 			
+			$(function(){
+				update_template();
+			})
 			
 			setInterval(update_preview, 1000);
 		</script>
 
 {% endblock %}
 
-{% block onload %}update_template(){%endblock%}
 
 {% block content %}
 		

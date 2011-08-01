@@ -37,6 +37,17 @@
 				}
 				
 			}
+			
+			function select_nonresponsive_students(){
+				{% for s in students %}
+					{% if s.most_recent_email %}
+						{% if s.responded %} {% else %}
+							$('#{{s.id}}box').attr('checked', 'checked');
+						{% endif %}
+					{% endif %}
+				{% endfor %}
+				
+			}
 		</script>
 	</head>
 	
@@ -48,7 +59,7 @@
 		<ul>
 			<li><input type="button" value="Students that must give talk next semester" onclick="alert(TODO)"/> </li>
 			<li><input type="button" value="Exempt students" onclick="alert(TODO)"/> </li>
-			<li><input type="button" value="Students that have not responded to latest email" onclick="alert(TODO)"/> </li>
+			<li><input type="button" value="Students that have not responded to latest email" onclick="select_nonresponsive_students()"/> </li>
 		</ul>
 		
 		
@@ -65,7 +76,7 @@
 			
 				{% for s in students %}
 				<tr>
-					<td class="center"> <input type="checkbox" name="{{s.id}}box" class="student_box"/> </td>
+					<td class="center"> <input type="checkbox" id="{{s.id}}box" name="{{s.id}}box" class="student_box"/> </td>
 					<td> {{s.name}} </td>
 					<td> {{s.all_advisors}} </td>
 					<td class="center"> {{s.most_recent_email}} </td>

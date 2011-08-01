@@ -1,0 +1,41 @@
+{% extends "dssapp/base.html" %}
+
+{% block title %}Admin | Talk Preference{% endblock %}
+{% block pagetitle %}Admin | Talk Preferences{% endblock %}
+
+{% block content %}
+
+<p> Legend: 
+	<ul>
+		<li><span class="cell prefer_background"> Student prefers this time </span>  </li>
+		<li><span class="cell available_background"> Student available </span></li>
+		<li><span class="cell cannot_background">Student cannot present </span></li>
+		<li><span class="cell none_background"> Student has not responded </span></li>
+	</ul>
+</p>
+
+
+
+<table>
+	<tr>
+		<td></td>
+		{% for e in events %}
+		<td> {{e.timestamp|date:"N d"}} </td>
+		{% endfor %}
+	</tr>
+	
+	{% for s in students %}
+		<tr>
+			<td>{{s.name}}</td>
+			{% for e in s.preferences %}
+				{% if e %}
+					<td class="{{e.preference}}_background"></td>
+				{% else %}
+					<td class="none_background"></td>
+				{% endif %}
+			{% endfor %}
+		</tr>
+	{% endfor %}
+	
+</table>
+{% endblock %}
