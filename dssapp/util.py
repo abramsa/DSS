@@ -70,6 +70,10 @@ def schedule_semester(semester, students):
 
     
                 
+                
+def most_recent_semester():
+    return Semester.objects.order_by('-year','-month')[0]
+    
             
             
     

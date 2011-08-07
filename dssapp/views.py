@@ -24,8 +24,7 @@ def schedule(request):
         events = Event.objects.filter(semester=semester).order_by('timestamp')
         
     else:
-        # what's the most recent semester.
-        semester = Semester.objects.order_by('-year')[0]
+        semester = most_recent_semester()
         return HttpResponseRedirect('schedule?semester=' + str(semester.year) + '.' + str(semester.month))
        
     
@@ -64,7 +63,7 @@ def admin_schedule(request):
                 ev.deletable = True
     else:
         # what's the most recent semester.
-        semester = Semester.objects.order_by('-year')[0]
+        semester = most_recent_semester()
         return HttpResponseRedirect('admin_schedule?semester=' + str(semester.year) + '.' + str(semester.month))
 
 
@@ -93,7 +92,12 @@ def student_dashboard(request):
             s.most_recent_email = emails[0]
         else:
             s.most_recent_email = None
-        s.responded = None
+        
+        if s.most_recent_email and s.most_recent_email.email.name == 'SubmitPrefs':
+            prefs = TalkPreference.objects.filter(student=s, event__semester=most_recent_semester())
+            s.responded = TalkPreference.objects.filter(student=s, event__semester=most_recent_semester()).exists()
+        else:
+            s.responded = None
             
     return render_to_response('dssapp/student_dashboard.html', {'students': students},
                                 context_instance=RequestContext(request))
@@ -152,6 +156,9 @@ def send_email(request):
             email = EmailMessage(subject, email_content, to=[student.email])
             email.send()
             
+            email_sent = EmailSent(student=student, email=template_obj)
+            email_sent.save()      
+                  
     return HttpResponseRedirect('student_dashboard')
             
 def schedule_preference(request):
@@ -170,8 +177,13 @@ def schedule_preference(request):
     
     
 def admin_preferences(request):
-    semester_str = request.GET['semester']
-    semester = string_to_semester(semester_str)
+    if 'semester' in request.GET:
+        semester_str = request.GET['semester']
+        semester = string_to_semester(semester_str)
+    else:
+        # what's the most recent semester.
+        semester = most_recent_semester()
+        return HttpResponseRedirect('admin_preferences?semester=' + str(semester.year) + '.' + str(semester.month))
     
     students = Student.objects.filter(active=True)[:]
     students = sorted(students, key=lambda x: x.name.split()[-1])  # sort by last name.
@@ -207,7 +219,9 @@ def message(request):
     return render_to_response('dssapp/message.html', {'message': messages[msg_type]})
     
 
-          
+def admin(request):
+    return render_to_response('dssapp/admin.html')
+      
 # Database modification views ---------------------------------------
 def create_event(request):
     # make sure the person is logged in.
@@ -315,14 +329,3 @@ def submit_preferences(request):
         talk_preference.save()
         
     return HttpResponseRedirect("/message?msg=prefsubmit")
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    

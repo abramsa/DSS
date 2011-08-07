@@ -41,6 +41,15 @@ class Command(BaseCommand):
         print "ADDING TALKS" + '-' * 60
         self.add_talks(lines)
         
+        print "ADDING SOME DEFAULT TEMPLATES"
+        submit_prefs = EmailTemplate(subject="Submit your preferences for DSS", name="SubmitPrefs", template="""
+        Dear {{student.name}},
+        
+        The time has come again to submit your preferences for next semester of DSS.  If anyone but Austin
+        receives this email, then he's a terrible programmer and you should ignore this email.
+        
+        http://127.0.0.1:8000/schedule_preference?semester=2011.09&student_key={{student.web_key}}""")
+        submit_prefs.save()
        
         
     def add_advisors(self, lines):
@@ -86,9 +95,11 @@ class Command(BaseCommand):
                     my_active = match.groups()[7] == '1'
                     my_web_key = random.randint(10**9,10**10)  # random 10-digit number
                     
-                    advisor = Advisor.objects.get(id=my_advisor)
                     semester = string_to_semester(my_semester)
                     new_student = Student(id=my_id, name=my_name, nickname=my_nickname, email=my_email, start_semester=semester, active=my_active, web_key=my_web_key )
+                    new_student.save()
+                    
+                    advisor = Advisor.objects.get(id=my_advisor)
                     new_student.advisors.add(advisor)
                     new_student.save()
                     
