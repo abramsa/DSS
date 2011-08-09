@@ -79,6 +79,10 @@ class Event(models.Model):
     
     def __str__(self):
         return self.event_type + " on " + self.timestamp.strftime('%b %d %Y ')
+        
+    def current(self):
+        now = datetime.now()
+        return (now < self.timestamp) and (self.timestamp - now) > 7
     
 class TalkPreference(models.Model):
     student = models.ForeignKey(Student)

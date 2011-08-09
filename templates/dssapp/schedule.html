@@ -6,27 +6,16 @@
 
 {% block head %}
 	<script type="text/javascript">
-		function toggle_talk(talk_id){
-			// find out if we have to hide or show the object.
-			var current_text = $('#talk' + talk_id + '_button').html()
-			if (current_text == '[+]'){
-				expand_talk(talk_id)
-			} else {
-				hide_talk(talk_id)
-			}
-		
-		}
-		
-		function expand_talk(talk_id){
-			$('#talk' + talk_id + '_button').html('[-]');
-			$('#talk' + talk_id).css('display', 'block')
-		}
-		
-		function hide_talk(talk_id){
-			$('#talk' + talk_id + '_button').html('[+]');
-			$('#talk' + talk_id).css('display', 'none')
-		}
-		
+		$().ready(function() {
+			$('.clickable').click(function(elem) {
+				b = $(this);
+				b.html('[' + (b.html() == '[+]' ? '-' : '+') + ']');
+				
+				b.siblings('.talk_description').toggle();
+			});
+			
+		});
+
 		function selection_change(){
 			var page = "schedule?semester=" + $('#goto_semester')[0].value;
 			document.location.href = page;
@@ -35,7 +24,6 @@
 {% endblock %}
 
 {% block content %}
-		
 	<p> Go to
 		<select onchange="selection_change()" id="goto_semester">
 			{% for s in all_semesters %}
@@ -49,7 +37,7 @@
 	</p>
 
 	{% for event in events %}
-		<div class="event">
+		<div class="event {% if event.current %} current{% endif %}">
 			<div class="event_header">
 				<div class="event_date">
 					&nbsp; {{ event.timestamp }}
@@ -65,14 +53,16 @@
 			<div class="event_description">
 				{% ifequal event.event_type "DSS" %}
 				<div class="speakers">
-					Speakers:
+					<!-- Speakers: -->
 					{% for talk in event.talks.all %}
 					    <div class="talk">
-							{{talk.student.name}}
+							<div class="student_name">{{talk.student.name}}</div>
 							{% if talk.title %}
-							<span id="talk{{talk.id}}_button" onclick="toggle_talk({{talk.id}})" class="clickable">[+]</span>
+							<span id="talk{{talk.id}}_button" class="clickable">[+]</span>
+							<span class="talk_title">{{talk.title}}</span>
+						
 							<div class="talk_description" id="talk{{talk.id}}">
-								<div class="talk_title">{{talk.title}}</div>
+								
 								<div class="abstract">
 									{% autoescape off %}
 									{{talk.abstract_name}}
