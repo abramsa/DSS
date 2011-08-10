@@ -1,0 +1,44 @@
+{% extends "dssapp/base.html" %}
+
+{% block title %} DSS Schedule {% endblock %}
+{% block pagetitle %} {{student_name}} {% endblock %}
+		
+
+{% block head %}
+	<script type="text/javascript">
+	
+	function set_desc_size() {
+		$('.talk_body').width($('h2').width() - $('.video').width() + 8);
+	}
+	
+	
+	$().ready(function() {
+		set_desc_size();
+		$(window).resize(function(ev) {
+			set_desc_size()
+		})
+	})
+	</script>
+{% endblock %}
+
+
+{% block content %}
+	{% for talk in student.talk_set.all %}
+		<div class="event">
+			<h2>{{talk.title}}</h2>
+			<div class="talk_body">
+				<div class="talk_info">
+					<div class="talk_meta_info">Presented {{talk.event_set.all.0.timestamp|date:"F d, Y"}}</div>
+					<div class="abstract">
+						{% autoescape off %}
+						{{talk.abstract_name}}
+						{% endautoescape %}
+					</div>
+				</div>
+			</div>
+			<div class="video">
+				<object style="height: 240px; width: 320px"><param name="movie" value="http://www.youtube.com/v/SWoYmTAfDbk?version=3"><param name="allowFullScreen" value="true"><param name="allowScriptAccess" value="always"><embed src="http://www.youtube.com/v/SWoYmTAfDbk?version=3" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="320" height="240"></object>
+			</div>
+		</div>
+	{% endfor %}
+{% endblock %}

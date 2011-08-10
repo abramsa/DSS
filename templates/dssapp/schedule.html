@@ -56,7 +56,7 @@
 					<!-- Speakers: -->
 					{% for talk in event.talks.all %}
 					    <div class="talk">
-							<div class="student_name">{{talk.student.name}}</div>
+							<div class="student_name"><a href="/student/{{talk.student.name}}">{{talk.student.name}}</a></div>
 							{% if talk.title %}
 							<div class="clickable title_container"><span class="expandmotron">[+]</span> <span class="talk_title">{{talk.title}}</span></div>
 						

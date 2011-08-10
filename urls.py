@@ -18,6 +18,8 @@ urlpatterns = patterns('',
     (r'^admin$', dssapp.views.admin),
     (r'^manage/', include(admin.site.urls)),
     
+    (r'^student/(?P<student_name>[\w\s!\.]+)$', dssapp.views.view_student),
+    
     (r'^$', dssapp.views.schedule),
     (r'^schedule$', dssapp.views.schedule),
     (r'^schedule_preference$', dssapp.views.schedule_preference),

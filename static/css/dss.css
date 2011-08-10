@@ -22,16 +22,17 @@ td.center {
 }
 
 div.ui-datepicker{
- font-size:14px;
+    font-size:14px;
 }
 
 .event {
     margin-bottom: 15px;
     background: #FCF2D8;
+    clear: both;
 }
 
 .event_description{
-/*    padding-left: 3ems;*/
+/*    padding-left: 3em;*/
     padding-right: 15px;
     font-size: 16;
 }
@@ -41,7 +42,6 @@ div.ui-datepicker{
 /*    background: #A8C1CF;*/
     font-size: 10pt;
     display: none;
-/*    width: 90%;*/
     margin: 0 1em 0 1em;
     border-top: 1px #274F67 dashed;
 }
@@ -80,6 +80,40 @@ div.ui-datepicker{
     font-size:20px;
     height:1.3em;
 
+}
+
+h2 {
+    background:#274F67;
+    color:white;
+    font-size:20px;
+/*    height:1.3em;*/
+    margin: 0;
+    padding: 0.2em;
+}
+
+.video {
+    float: right;
+    width: 320px;
+    height: 240px;
+/*    width: 25%;*/
+    background: gray;
+    clear: right;
+    
+}
+
+.talk_info {
+    padding: 0.5em;
+}
+
+.talk_meta_info {
+    margin-bottom: 1em;
+}
+
+.talk_body {
+    float: left;
+    background: #FCF2D8;
+    min-height: 240px;
+    margin-bottom: 1em;
 }
 
 .speakers {
@@ -138,6 +172,10 @@ div.ui-datepicker{
 .emph {
     font-style: italic;
     
+}
+
+.strong {
+    font-weight: bold;
 }
 
 .prefer {

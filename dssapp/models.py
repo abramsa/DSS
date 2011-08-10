@@ -53,8 +53,6 @@ class Student(models.Model):
         return s
             
         
-        
-        
 class Talk(models.Model):
     student = models.ForeignKey(Student)
 

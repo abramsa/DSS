@@ -40,6 +40,11 @@ def schedule(request):
                                                        'semester': semester,
                                                        'all_semesters': all_semesters},
                                context_instance=RequestContext(request))
+                         
+def view_student(request, student_name):
+    student = Student.objects.get(name=student_name)
+    return render_to_response('dssapp/view_student.html', {'student_name': student_name,
+                                                           'student'     : student})
                                
                                
 def admin_schedule(request):
