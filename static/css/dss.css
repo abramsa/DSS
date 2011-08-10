@@ -31,22 +31,29 @@ div.ui-datepicker{
 }
 
 .event_description{
-    padding-left: 15px;
+/*    padding-left: 3ems;*/
     padding-right: 15px;
     font-size: 16;
 }
 
 .talk_description{
-    padding: 20px;
-    background: #A8C1CF;
-    font-size: 12;
+    padding: 1em;
+/*    background: #A8C1CF;*/
+    font-size: 10pt;
     display: none;
-    width: 90%;
+/*    width: 90%;*/
+    margin: 0 1em 0 1em;
+    border-top: 1px #274F67 dashed;
 }
 
 .talk_title {
-    font-style: italic;
+/*    font-style: italic;*/
+/*    font-weight: bold;*/
     margin-bottom: 5px;
+}
+
+.student_name {
+    font-weight: bold;
 }
 
 .abstract {
@@ -56,32 +63,33 @@ div.ui-datepicker{
 .event_date {
     float:left;
     background:#274F67;
-    width: 50%;
+    width: 75%;
     font-size:20px;
     color:white;
-    height:25px;
+    height:1.3em;
 
 }
 
 .event_type {
     float:right;
-    background:#616F77;
+/*    background:#616F77;*/
+    background:#274F67;
     color:white;
-    width: 50%;
+    width: 25%;
     text-align:right;
     font-size:20px;
-    height:25px;
+    height:1.3em;
 
 }
 
 .speakers {
     float:left;
-    width: 50%;
+    width: 75%;
 }
 
 .judges {
     float:right;
-    width: 50%;
+    width: 25%;
 }
 
 .clear {
@@ -122,6 +130,10 @@ div.ui-datepicker{
 }
 
 .clickable:hover { cursor: pointer;}
+
+.title_container {
+    margin-left: 2em;
+}
 
 .emph {
     font-style: italic;
