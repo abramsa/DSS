@@ -8,10 +8,10 @@
 	<script type="text/javascript">
 		$().ready(function() {
 			$('.clickable').click(function(elem) {
-				b = $(this);
+				b = $(this).children('.expandmotron');
 				b.html('[' + (b.html() == '[+]' ? '-' : '+') + ']');
 				
-				b.siblings('.talk_description').toggle();
+				$(this).siblings('.talk_description').toggle();
 			});
 			
 		});
@@ -33,14 +33,14 @@
 
 				</option>
 			{% endfor %}
-		</select>.
+		</select>
 	</p>
-
+	
 	{% for event in events %}
 		<div class="event {% if event.current %} current{% endif %}">
 			<div class="event_header">
 				<div class="event_date">
-					&nbsp; {{ event.timestamp }}
+					&nbsp; {{ event.timestamp|date:"F d" }}
 				</div>
 				
 				<div class="event_type">
@@ -58,8 +58,7 @@
 					    <div class="talk">
 							<div class="student_name">{{talk.student.name}}</div>
 							{% if talk.title %}
-							<span id="talk{{talk.id}}_button" class="clickable">[+]</span>
-							<span class="talk_title">{{talk.title}}</span>
+							<div class="clickable title_container"><span class="expandmotron">[+]</span> <span class="talk_title">{{talk.title}}</span></div>
 						
 							<div class="talk_description" id="talk{{talk.id}}">
 								
