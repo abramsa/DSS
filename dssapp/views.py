@@ -248,7 +248,11 @@ def message(request):
     
 
 def admin(request):
-    return render_to_response('dssapp/admin.html')
+    if request.user.is_authenticated():
+        return render_to_response('dssapp/admin.html', {'admin': True})
+    else:
+        return render_to_response('dssapp/admin.html', {'admin': False})
+        
       
 # Database modification views ---------------------------------------
 def create_event(request):

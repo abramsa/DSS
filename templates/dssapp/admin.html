@@ -12,12 +12,20 @@
 		
 {% block content %}
 	<p> Potentially-useful links:
+		
+	{% if admin %}
 	<ul>
 		<li> <a href="manage/dssapp/advisor">Create/Modify/Delete Advisors</a> </li>
 		<li> <a href="manage/dssapp/student">Create/Modify/Delete Students</a> </li>
 		<li> <a href="admin_schedule">Manage DSS Schedule</a></li>
 		<li> <a href="admin_preferences">View Schedule Preferences</a></li>
 		<li> <a href="student_dashboard">Email/Schedule Students</a></li>
+		<li> <a href="manage/logout">Logout</a></li>
+		
 	</ul>
+	{% else %}
+		<a href="manage">Login</a>
+	
+	{% endif %}
 
 {% endblock %}
