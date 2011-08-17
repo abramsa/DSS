@@ -32,6 +32,13 @@ def timestamp_to_semester(timestamp):
     
 # schedule the following students into the DSS schedule.
 def schedule_semester(semester, students):
+    # make sure none of the students are already giving a talk.
+    dss_students = []
+    for s in students:
+        if Talk.objects.filter(event__semester=semester, student=s).exists():
+            continue
+        dss_students.append(s)
+    
     events = Event.objects.filter(event_type='DSS', semester=semester)
     
     schedulable = []
@@ -45,7 +52,7 @@ def schedule_semester(semester, students):
     cost_matrix = []
     
     # the first index is for students
-    for s in students:
+    for s in dss_students:
         costs = []
         for e in schedulable:
             try:
@@ -62,8 +69,8 @@ def schedule_semester(semester, students):
     print_matrix(cost_matrix)
 
     for row, column in indexes:
-        print "Scheduling student", students[row], "for talk on", schedulable[column].timestamp
-        talk = Talk(student=students[row], order=1)
+        print "Scheduling student", dss_students[row], "for talk on", schedulable[column].timestamp
+        talk = Talk(student=dss_students[row], order=1)
         talk.save()
         schedulable[column].talks.add(talk)
         schedulable[column].save()

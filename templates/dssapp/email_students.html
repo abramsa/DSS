@@ -34,6 +34,16 @@
 			    $('#template').val(value+'\{\{student.all_advisors\}\}');
 			}
 			
+			function add_next_talk(){
+				var value = $('#template').val();
+			    $('#template').val(value+'\{\{student.next_talk\}\}');
+			}
+			
+			function add_next_talk_time(){
+				var value = $('#template').val();
+			    $('#template').val(value+'\{\{student.next_talk.event_set.all.0.timestamp\}\}');
+			}
+			
 			function update_template(){
 				var template_selected = $('#template_kind')[0].value;
 				{% for t in templates %}
@@ -115,6 +125,9 @@
 					<span class="row_title">
 					Template: <input type="button" value="Student name" onclick="add_student_name()">
 							  <input type="button" value="Advisor's name(s)" onclick="add_advisor_name()">
+							<input type="button" value="Next talk" onclick="add_next_talk()">
+							<input type="button" value="Next talk time" onclick="add_next_talk_time()">
+							
 					<br/>
 					</span>
 				

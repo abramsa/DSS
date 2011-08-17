@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
-
+import os
+import settings
 
 class Semester(models.Model):
     year = models.IntegerField(default=1970)
@@ -51,6 +52,13 @@ class Student(models.Model):
             elif (i == len(advisors) - 2):
                 s += ", and "
         return s
+        
+    def next_talk(self):
+        all_my_talks = Talk.objects.filter(student=self)
+        for talk in all_my_talks:
+            if talk.event_set.get().timestamp > datetime.now():
+                return talk
+        return None
             
         
 class Talk(models.Model):
@@ -63,6 +71,20 @@ class Talk(models.Model):
     
     def abstract_name(self):
         return self.abstract.replace(r'\n','<br/>').replace('\\\'','\'' )
+        
+    def video_link(self):
+        if not settings.VIDEO_ROOT:
+            return None
+        
+        event = self.event_set.get()
+        file_name =  event.timestamp.strftime('%Y-%m-%d') + '_' + self.student.name.replace(' ', '_') + '.mp4'
+        if os.path.exists(settings.VIDEO_ROOT + file_name):
+            return 'video/' + file_name
+        else:
+            return None
+            
+    def __str__(self):
+        return self.student.name + "'s Talk on " + self.event_set.get().timestamp.strftime('%b %d, %Y')
 
 
 

@@ -1,0 +1,227 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                          %%
+%%                             DSS Chair Manual                             %%
+%%                                                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Revision history:
+- created 8/4/2008 by Edwin Westbrook
+- edited 08/21/2008 by Eric Xu
+- edited 08/13/2011 by Austin Abrams
+
+%%%%%
+0. Introduction
+%%%%%
+
+So you have volunteered to be a DSS chair. Good for you! It's more than just
+a bullet point on your CV; it also gives you valuable academic skills. These
+are probably the first sessions you will ever chair! Hopefully your academic
+career will require chairing more sessions in the future, so running DSS is
+great practice. Also, being a DSS chair gives you practice in organizing and
+running events. If you do a good job, people will notice, especially the
+faculty. Finally, chairing DSS gives you the opportunity to listen to many
+talks. If a talk is good, you learn how to give a good talk, while if it is
+bad, you learn what you think is bad in a talk and hopefully you can avoid
+the same mistakes. Plus, of course, DSS is good for everyone else in the
+department. And somebody needs to do it.
+
+A word of advice: do not get bogged down in trying to make everyone happy.
+This is a volunteer position. You can only go so far. Do not let people
+convince you to do lots of unnecessary shuffling around of schedules or to
+make unreasonable exceptions. As long as you tell people ahead of time what
+is expected of them, you should expect them to do it. If they do not, do
+whatever is most convenient for you. In the end, if someone just will not
+go along with you, it is they who look bad. And remember also: it is not
+your job to make them do it. You can always defer to the chair of the
+Doctoral Program Committee (aka Dr Pless in 2011), who can deal with
+problem cases.
+
+Another point to keep in mind: you are going to have a fair bit of
+information about people. A lot of this stuff is not exactly confidential,
+but you should try to be discreet about it.
+
+Otherwise, this can be a lot of fun! Get out in front of people and make
+a speech! Get everything organized just how you want it! Enjoy yourself!
+
+%%%%%
+1. Getting set up.
+%%%%%
+
+Perform the following commands:
+
+    $ ssh yourseasname@ssh.seas.wustl.edu
+    $ cd /research-www/engineering/dss.cse/dss
+    $ ../local/bin/python manage.py createsuperuser
+	
+And follow the onscreen steps.  Congratulations, you're now a DSS superuser.  Don't tell anybody about how easy that was.
+
+%%%%%
+2. Scheduling
+%%%%%
+
+The work of running DSS is split into two parts, scheduling the students and
+running the talks. Scheduling should start about a month before the semester
+starts, so at the end of July for the Fall schedule, and at the end of
+December or the beginning of January for the Spring schedule. Alternatively,
+you can schedule for a whole year in the summer.  
+
+This system used to work by doing a LOT of in-database editing, and making sure
+that you constantly backed up the SQL database before doing anything.  Now,
+everything is web-based, which should make your job substantially easier.  If
+you want, you should go see Dan Lazewatsky and Austin Abrams and give them each
+a 6-pack of Blue Moon, Newcastle Brown Ale, or Schlafly Pale Ale as thanks.
+
+Here are the steps to create a DSS schedule:
+
+1. Log into your superuser account by going to
+
+   http://dss.cse.wustl.edu/admin
+
+   And clicking on "Login".  Go back to http://dss.cse.wustl.edu/admin, and 
+   there should now be a few admin options.  Click on "Manage DSS Schedule".
+
+2. At the top of the page, there should be a bullet point that says "Make a new
+   schedule for Fall/Spring yyyy".  Fill in the appropriate details, and press 
+   submit.  You now have an empty DSS schedule for that semester, which defaults
+   to placing an event every Friday from January 23 - April 30 for the Spring
+   semester, and September 15 through December 5 for the Fall Semester.
+
+3. Go get a copy of the school's academic calendar, and find out which dates 
+   overlap with official university holidays or breaks.  Let's suppose that
+   October 14 was scheduled as a DSS event, but it's actually Fall Break.  Go to
+   the top of the admin schedule page, and create a new "Break" event for
+   October 14, and fill in the appropriate details.  Create that new event, and 
+   the schedule should change, with a second event on October 14, which says 
+   "There will be no seminar due to Fall Break."  Find the old DSS event 
+   scheduled for that date, and delete that event by clicking on the "Delete 
+   this event" on the right side of the page.
+
+4. If you anticipate that there will be more events than students can fill, feel
+   free to add a Hot Topics event in lieu of a regular DSS event.  This is a bit 
+   more freeform, but in the past we've had successful Hot Topics events, and 
+   it's a good way to get the department to pay for pizza.  Creating a Hot
+   Topics event is similar to creating a Break.
+
+5. Now that you know which dates will have DSS events, it's time to schedule
+   some students into those events.  Go back to 
+
+   http://dss.cse.wustl.edu/admin
+
+   And click on "Email/Schedule Students"
+
+6. This is a list of all currently-known students in the department.  Through 
+   this interface, we can select students and email them or schedule them in 
+   large groups.
+	
+   Find out which students must give their DSS talk in the next two 
+   semesters, select them by clicking on their checkboxes, and scroll to the 
+   bottom of the page.  Make sure that the button is set to "Email Students",
+   and click "Submit".
+
+7. This will bring up an interface where you can write emails to students.
+   There are already a few templates that you should probably use.  Under
+   "Email Template", choose SubmitPrefs (it may already be selected).  On the 
+   left-hand side is a Django-style template of the email, which is just a
+   fancy way to draft your email and fill it with person-specific parameters.
+   The right-hand side of this page shows a preview of what one of the students
+   will see.
+
+   The SubmitPrefs template should work fine for now, so just click on "Send 
+   Mail".  DO NOT PRESS THE SUBMIT BUTTON MORE THAN ONCE.  This is sending
+   email to a bunch of students across the department, and they will receive
+   the email more than once if you press the submit button again.  It will
+   probably take a few minutes, so just go get something to drink and come back.
+
+8. Assuming everything went well, you'll be put back on the student dashboard.
+   Notice that for all the students you just emailed, we keep a timestamp of 
+   which email we sent which students.
+
+   Wait for people to respond. They will each get sent a URL by the
+   SubmitPrefs email, allowing them to state their preferences and request
+   exemptions. You can see what people are entering by going to
+
+   http://dss.cse.wustl.edu/admin
+
+   and clicking on "View Schedule Preferences".
+
+   Note that the rules for exemptions are in the email. If you have any
+   questions about what should be an exemption, ask the Doctoral Program
+   Committee chair (aka Dr Pless in 2011).
+
+9. A few days before people are supposed to have responded, check for
+   stragglers (on the list of students that you can email, there is a column 
+   that corresponds to if a student has or has not yet responded to the latest
+   email sent).  I have found that most of the time these are people whose
+   email address is incorrect or who are just ignoring you because they
+   are no longer actually in the PhD program. Check with one of the
+   secretaries (aka Madeline in 2011) about these people. If they really
+   are supposed to be presenting, try to talk to them in person, to make
+   sure you have the right email address and to make sure they know that
+   they really do have to respond. You can update a student's email
+   address by going to
+
+   http://dss.cse.wustl.edu/admin
+
+   and clicking on "Create/Modify/Delete Students".
+
+10. Once you're ready to build up the schedule, click on "Email/Schedule 
+	Students".  To schedule a group of students, select them, make sure 
+	"Schedule Students" is selected, and click "Submit".  This will create a 
+	scheduling optimization problem (solved by Munkres algorithm, FYI) that will 
+	try to maximize the "happiness" of everybody against their preferences.
+	
+	You should make sure to schedule the students that ABSOLUTELY MUST present
+	next semester first, as one big group, and then after those have been
+	scheduled, add in anybody that has filled out their preferences, and if
+	there is still space, anybody that hasn't filled out any preferences.
+	
+	Remember, as DSS Chair, you're volunteering to do a pretty thankless job, so
+	if someone says that they didn't get the email, or that they can't give
+	their talk on the day they were scheduled, just tell them to try and find
+	someone else to swap with or talk with the Doctoral Program Committee chair 
+	(aka Dr Pless in 2011).  
+	
+	The assignment algorithm used is in fact optimal, so if a person was 
+	scheduled on some day when they couldn't actually present, then moving them
+	to any other day would cause one or more people to present on a day when
+	they couldn't, and someone's gotta take the fall.
+	
+11. About a week before a student is scheduled to give a talk, use the email
+    interface to send them the SubmitAbstract email.  This will prompt the
+    student to fill in information about their talk.  If a student neglects
+    to fill in this information, you are free to fill it in yourself courtesy
+    of the Automatic CS Paper Generator, found here:
+
+	http://pdos.csail.mit.edu/scigen/
+
+12. Give yourself a great big pat on the back!!!
+
+
+%%%%%
+3. Running the Events
+%%%%%
+
+FIXME: write this!!!
+
+
+%%%%%
+4. Remaining TODOs
+%%%%%
+
+(TODO: Put the rules for exemptions in the email, and allow a user to request 
+	an exemption)
+
+(TODO: Send out emails after being scheduled)
+
+(TODO: Ajaxify the send_email page so that the admin can see progress.)
+
+(TODO: Automatically send email to the department advertising this week's DSS events)
+
+(TODO: Upload a video to the server)
+
+(BIG TODO: How do we find out which students are active and/or which students 
+	have to give a talk in the next semester?  Maybe send Madeline a way to mark 
+	this?)

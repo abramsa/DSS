@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     (r'^schedule$', dssapp.views.schedule),
     (r'^schedule_preference$', dssapp.views.schedule_preference),
     (r'^message$', dssapp.views.message),
+    (r'^abstract$', dssapp.views.abstract),
     
     
     (r'^admin_schedule$', dssapp.views.admin_schedule),
@@ -35,11 +36,16 @@ urlpatterns = patterns('',
     (r'^create_event$', dssapp.views.create_event),
     (r'^delete_event$', dssapp.views.delete_event),
     (r'^submit_preferences$', dssapp.views.submit_preferences),
+    (r'^submit_abstract$', dssapp.views.submit_abstract),
     
     
     (r'^email_students$', dssapp.views.email_students),
     (r'^render_email_template$', dssapp.views.render_email_template),
     (r'^send_email$', dssapp.views.send_email),
+
+    url(r'^video/(?P<path>.*)$', 'django.views.static.serve', {
+                'document_root': settings.VIDEO_ROOT,
+            }),
 
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
                 'document_root': settings.MEDIA_ROOT,

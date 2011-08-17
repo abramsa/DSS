@@ -150,10 +150,11 @@ h2 {
     width: 500px;
 }
 
-#template {
+#abstract_input, #template {
     width: 475px;
     height: 475px;
     margin-left: 7px;
+    font-size:12pt;
 }
 
 #preview {

@@ -50,6 +50,17 @@ class Command(BaseCommand):
         
         http://127.0.0.1:8000/schedule_preference?semester=2011.09&student_key={{student.web_key}}""")
         submit_prefs.save()
+        
+        submit_abstract = EmailTemplate(subject="Submit your abstract for DSS", name="SubmitAbstract", template="""
+        Dear {{student.name}},
+
+                As a reminder, your DSS talk is coming up soon, on {{student.next_talk.event_set.all.0.timestamp}}  Please fill out your abstract in a timely fashion by going to this URL:
+
+                http://127.0.0.1/abstract?talk_id={{student.next_talk.id}}&student_key={{student.web_key}}
+
+        Thanks,
+        Your friendly DSS Chairs""")
+        submit_abstract.save()
        
         
     def add_advisors(self, lines):

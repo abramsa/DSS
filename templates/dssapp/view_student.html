@@ -28,7 +28,12 @@
 			<h2>{{talk.title}}</h2>
 			<div class="talk_body">
 				<div class="talk_info">
-					<div class="talk_meta_info">Presented {{talk.event_set.all.0.timestamp|date:"F d, Y"}}</div>
+					<div class="talk_meta_info">{% if talk.event_set.all.0.timestamp > now %}To be presented on {% else %} Presented on {% endif %} {{talk.event_set.all.0.timestamp|date:"F d, Y"}}
+					{% if talk.video_link %}
+					&nbsp;
+					<a href="../{{talk.video_link}}">Download</a>
+					{% endif %}
+					</div>
 					<div class="abstract">
 						{% autoescape off %}
 						{{talk.abstract_name}}
@@ -37,7 +42,12 @@
 				</div>
 			</div>
 			<div class="video">
-				<object style="height: 240px; width: 320px"><param name="movie" value="http://www.youtube.com/v/SWoYmTAfDbk?version=3"><param name="allowFullScreen" value="true"><param name="allowScriptAccess" value="always"><embed src="http://www.youtube.com/v/SWoYmTAfDbk?version=3" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="320" height="240"></object>
+				{% if talk.video_link %}
+				
+				<video src="../{{talk.video_link}}" width="320" height="240" controls="controls">
+				Your browser does not support the video tag.
+				</video>
+				{% endif %}
 			</div>
 		</div>
 	{% endfor %}

@@ -43,8 +43,10 @@ def schedule(request):
                          
 def view_student(request, student_name):
     student = Student.objects.get(name=student_name)
+    now = datetime.now()
     return render_to_response('dssapp/view_student.html', {'student_name': student_name,
-                                                           'student'     : student})
+                                                           'student'     : student,
+                                                           'now' : now})
                                
                                
 def admin_schedule(request):
@@ -101,6 +103,9 @@ def student_dashboard(request):
         if s.most_recent_email and s.most_recent_email.email.name == 'SubmitPrefs':
             prefs = TalkPreference.objects.filter(student=s, event__semester=most_recent_semester())
             s.responded = TalkPreference.objects.filter(student=s, event__semester=most_recent_semester()).exists()
+        elif s.most_recent_email and s.most_recent_email.email.name == 'SubmitAbstract':
+            s.responded = s.next_talk().abstract != None
+        
         else:
             s.responded = None
             
@@ -131,6 +136,8 @@ def schedule_students(request):
     semester = string_to_semester(semester_str)
     
     schedule_semester(semester, students)
+    return HttpResponseRedirect('schedule')
+    
     
 def send_email(request):
     template = request.POST['template']
@@ -179,6 +186,21 @@ def schedule_preference(request):
     return render_to_response('dssapp/schedule_preference.html', {'semester': semester, 'student': student, 'events': events},
                               context_instance=RequestContext(request))
     
+def abstract(request):
+    talk_id = request.GET.get('talk_id', None)
+    student_key = request.GET.get('student_key', None)
+    if not student_key or not talk_id:
+        return HttpResponseRedirect('schedule')
+        
+    student = get_object_or_404(Student, web_key=student_key)
+    talk = get_object_or_404(Talk, id=int(talk_id))
+    if student != talk.student:
+        return HttpResponseRedirect('schedule')
+    
+    deadline = talk.event_set.get().timestamp - timedelta(days=3)
+    
+    return render_to_response('dssapp/abstract.html', {'talk' : talk, 'student' : student, 'deadline' : deadline},
+                              context_instance=RequestContext(request))
     
     
 def admin_preferences(request):
@@ -220,12 +242,17 @@ def render_email_template(request):
     
 def message(request):
     msg_type = request.GET['msg']
-    messages = {'prefsubmit': 'Thank you for submitting your preferences.'}
+    messages = {'prefsubmit': 'Thank you for submitting your preferences.',
+                'abstractsubmit': 'Thank you for sumitting your abstract.'}
     return render_to_response('dssapp/message.html', {'message': messages[msg_type]})
     
 
 def admin(request):
-    return render_to_response('dssapp/admin.html')
+    if request.user.is_authenticated():
+        return render_to_response('dssapp/admin.html', {'admin': True})
+    else:
+        return render_to_response('dssapp/admin.html', {'admin': False})
+        
       
 # Database modification views ---------------------------------------
 def create_event(request):
@@ -334,3 +361,18 @@ def submit_preferences(request):
         talk_preference.save()
         
     return HttpResponseRedirect("/message?msg=prefsubmit")
+    
+def submit_abstract(request):
+    talk_id = request.POST.get('talk_id', None)
+    if talk_id == None:
+        return HttpResponseRedirect("schedule")
+    
+    talk = get_object_or_404(Talk, id=int(talk_id))
+    abstract = request.POST.get('abstract', None)
+    title = request.POST.get('title', None)
+    
+    talk.abstract = abstract
+    talk.title = title
+    talk.save()
+
+    return HttpResponseRedirect("/message?msg=abstractsubmit")
