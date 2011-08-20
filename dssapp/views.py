@@ -41,11 +41,10 @@ def schedule(request):
                                                        'all_semesters': all_semesters},
                                context_instance=RequestContext(request))
                          
-def view_student(request, student_name):
-    student = Student.objects.get(name=student_name)
+def view_student(request, student_id):
+    student = Student.objects.get(id=student_id)
     now = datetime.now()
-    return render_to_response('dssapp/view_student.html', {'student_name': student_name,
-                                                           'student'     : student,
+    return render_to_response('dssapp/view_student.html', {'student'     : student,
                                                            'now' : now})
                                
                                
