@@ -1,0 +1,38 @@
+{% extends "dssapp/base.html" %}
+
+{% block title %}DSS Abstract{% endblock %}
+
+{% block pagetitle %}  
+	Abstract
+{%endblock%}
+
+{% block head %}
+
+{% endblock %}
+
+
+{% block content %}
+
+<p> Hi, {{talk.student.name}}.  Please fill out the abstract for the following talk:</p>
+
+<p> <span class="emph"> {{talk}} </span> </p>
+
+<p> Please submit your abstract by {{deadline}}, or else we reserve the right to generate an abstract for you,
+	courtesy of the <a href="http://pdos.csail.mit.edu/scigen/">Automatic CS Paper Generator</a>. </p>
+	
+	<div class="clear"> </div>
+		
+	<form action="submit_abstract" method="post">
+		{% csrf_token %}
+		<input type="hidden" name="talk_id" value="{{talk.id}}" />
+		
+		<p>Title: <input type="text" name="title" value="{% if talk.title %}{{talk.title}}{% endif %}"></input> </p>
+		
+		<textarea id="abstract_input" name="abstract">{% if talk.abstract %}{{talk.abstract}}{% endif %}</textarea>
+		</input>
+		<br/>
+		
+		<input type="submit">
+	</form>
+
+{% endblock %}
