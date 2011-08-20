@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     (r'^admin$', dssapp.views.admin),
     (r'^manage/', include(admin.site.urls)),
     
-    (r'^student/(?P<student_name>[\w\s!\.]+)$', dssapp.views.view_student),
+    (r'^student/(?P<student_id>\d+)$', dssapp.views.view_student),
     
     (r'^$', dssapp.views.schedule),
     (r'^schedule$', dssapp.views.schedule),
@@ -42,10 +42,6 @@ urlpatterns = patterns('',
     (r'^email_students$', dssapp.views.email_students),
     (r'^render_email_template$', dssapp.views.render_email_template),
     (r'^send_email$', dssapp.views.send_email),
-
-    url(r'^video/(?P<path>.*)$', 'django.views.static.serve', {
-                'document_root': settings.VIDEO_ROOT,
-            }),
 
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
                 'document_root': settings.MEDIA_ROOT,
