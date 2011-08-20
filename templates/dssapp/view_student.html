@@ -31,7 +31,7 @@
 					<div class="talk_meta_info">{% if talk.event_set.all.0.timestamp > now %}To be presented on {% else %} Presented on {% endif %} {{talk.event_set.all.0.timestamp|date:"F d, Y"}}
 					{% if talk.video_link %}
 					&nbsp;
-					<a href="../{{talk.video_link}}">Download</a>
+					<a href="{{talk.video_link}}">Download</a>
 					{% endif %}
 					</div>
 					<div class="abstract">
