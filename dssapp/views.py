@@ -54,7 +54,7 @@ def exemptions(request):
         return HttpResponseRedirect("/message?msg=permissions")
     
     # gather all the exemptions for all students.
-    all_exemptions = []
+    nonexempt = []
     graduates = []
     not_present = []
     students = sort_by_last_name(Student.objects.all())
@@ -66,8 +66,8 @@ def exemptions(request):
         elif exemption.reason == 'Not present':
             not_present.append(exemption)
         else:
-            all_exemptions.append(exemption)
-    return render_to_response('dssapp/exemptions.html', {'exemptions' : all_exemptions,
+            nonexempt.append(exemption)
+    return render_to_response('dssapp/exemptions.html', {'nonexempt' : nonexempt,
                                                          'graduates' : graduates,
                                                          'not_present' : not_present},
                                                          context_instance=RequestContext(request))
@@ -147,11 +147,14 @@ def student_dashboard(request):
         else:
             exempt.append(s)
     students = nonexempt + exempt + not_present + graduates
-            
+                
     return render_to_response('dssapp/student_dashboard.html', {'nonexempt': nonexempt, 'exempt': exempt, 'graduates': graduates, 'not_present': not_present, 'students': students},
                                 context_instance=RequestContext(request))
     
 def email_students(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
+    
     students = []
     for param in request.POST:
         if param.endswith('box'):
@@ -165,6 +168,9 @@ def email_students(request):
                               context_instance=RequestContext(request))
                               
 def schedule_students(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
+    
     students = []
     for param in request.POST:
         if param.endswith('box'):
@@ -174,11 +180,25 @@ def schedule_students(request):
     semester_str = '2011.09'
     semester = string_to_semester(semester_str)
     
-    schedule_semester(semester, students)
+    schedule_semester_students(semester, students)
+    
+    return HttpResponseRedirect('schedule')
+    
+def schedule_judges(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
+    
+    schedule_semester_judges(most_recent_semester())
+    schedule_semester_judges(most_recent_semester())
+    schedule_semester_judges(most_recent_semester())
+    
     return HttpResponseRedirect('schedule')
     
     
 def send_email(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
+    
     template = request.POST['template']
     subject = request.POST['subject_line']
     
@@ -243,6 +263,9 @@ def abstract(request):
     
     
 def admin_preferences(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
+    
     if 'semester' in request.GET:
         semester_str = request.GET['semester']
         semester = string_to_semester(semester_str)
@@ -269,6 +292,9 @@ def admin_preferences(request):
 
 
 def render_email_template(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
+    
     try:
         template = Template(request.GET['template'])
         student_id = request.GET['student_id']

@@ -97,8 +97,7 @@ class Talk(models.Model):
         for extension in ['.mp4', '.avi', '.mov', '.m4v', '.wmv', '.mpg',]:
             if os.path.exists(settings.VIDEO_ROOT + file_name + extension):
                 return hosted_root + file_name + extension
-        else:
-            return None
+        return None
             
     def __str__(self):
         return self.student.name + "'s Talk on " + self.event_set.get().timestamp.strftime('%b %d, %Y')
