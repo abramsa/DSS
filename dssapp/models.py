@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime
 import os
 import settings
+import util
 
 class Semester(models.Model):
     year = models.IntegerField(default=1970)
@@ -17,7 +18,8 @@ class Semester(models.Model):
         else:
             d = datetime(month=self.month, year=self.year, day=1)
             return d.strftime('%B')
-        
+    def __str__(self):
+        return self.season() + " " + str(self.year)
 
 class Advisor(models.Model):
     name = models.CharField(null=False, max_length=100)
@@ -59,6 +61,16 @@ class Student(models.Model):
             if talk.event_set.get().timestamp > datetime.now():
                 return talk
         return None
+       
+    def last_talk(self):
+        all_my_talks = Talk.objects.filter(student=self)
+        latest_talk = None
+        for talk in all_my_talks:
+            timestamp = talk.event_set.get().timestamp
+            if timestamp < datetime.now():
+                if latest_talk == None or latest_talk.event_set.get().timestamp < timestamp:
+                    latest_talk = talk
+        return latest_talk
             
         
 class Talk(models.Model):
@@ -88,7 +100,10 @@ class Talk(models.Model):
     def __str__(self):
         return self.student.name + "'s Talk on " + self.event_set.get().timestamp.strftime('%b %d, %Y')
 
-
+class Exemption(models.Model):
+    student = models.ForeignKey(Student)
+    semester = models.ForeignKey(Semester)
+    reason = models.CharField(max_length=1024, default='Not Exempted')
 
 class Event(models.Model):
     timestamp = models.DateTimeField(null=True)

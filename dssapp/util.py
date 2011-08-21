@@ -75,13 +75,23 @@ def schedule_semester(semester, students):
         schedulable[column].talks.add(talk)
         schedulable[column].save()
 
-    
+
+def sort_by_last_name(students):
+    return sorted(students, key=lambda x: x.name.split()[-1])  # sort by last name.
                 
                 
 def most_recent_semester():
     return Semester.objects.order_by('-year','-month')[0]
     
-            
-            
+        
+def exemption_status(student):
+    my_exemptions = Exemption.objects.filter(student=student)
+    if not my_exemptions:
+        new_exemption = Exemption(student=student, 
+                                  semester=most_recent_semester())
+        new_exemption.save()
+        return new_exemption
     
-    
+    # choose the most recent.
+    return my_exemptions.order_by('-semester__year', '-semester__month')[0]       
+

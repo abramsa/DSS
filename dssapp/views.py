@@ -44,9 +44,32 @@ def schedule(request):
 def view_student(request, student_id):
     student = Student.objects.get(id=student_id)
     now = datetime.now()
-    return render_to_response('dssapp/view_student.html', {'student'     : student,
+    return render_to_response('dssapp/view_student.html', {'student': student,
                                                            'now' : now})
-                               
+
+def exemptions(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect("/message?msg=permissions")
+    
+    # gather all the exemptions for all students.
+    all_exemptions = []
+    graduates = []
+    not_present = []
+    students = sort_by_last_name(Student.objects.all())
+    
+    for student in students:
+        exemption = exemption_status(student)
+        if exemption.reason == 'PhD Dissertation':
+            graduates.append(exemption)
+        elif exemption.reason == 'Not present':
+            not_present.append(exemption)
+        else:
+            all_exemptions.append(exemption)
+    return render_to_response('dssapp/exemptions.html', {'exemptions' : all_exemptions,
+                                                         'graduates' : graduates,
+                                                         'not_present' : not_present},
+                                                         context_instance=RequestContext(request))
+    
                                
 def admin_schedule(request):
     # make sure the person is logged in.
@@ -91,7 +114,12 @@ def student_dashboard(request):
         return HttpResponseRedirect('admin/')
         
     students = Student.objects.filter(active=True)[:]
-    students = sorted(students, key=lambda x: x.name.split()[-1])  # sort by last name.
+    students = sort_by_last_name(students)
+    
+    graduates = []
+    not_present = []
+    nonexempt = []
+    exempt = []
     for s in students:
         emails = EmailSent.objects.filter(student=s).order_by('-timestamp')
         if len(emails) > 0:
@@ -104,11 +132,21 @@ def student_dashboard(request):
             s.responded = TalkPreference.objects.filter(student=s, event__semester=most_recent_semester()).exists()
         elif s.most_recent_email and s.most_recent_email.email.name == 'SubmitAbstract':
             s.responded = s.next_talk().abstract != None
-        
         else:
             s.responded = None
             
-    return render_to_response('dssapp/student_dashboard.html', {'students': students},
+        exemption = exemption_status(s)
+        if exemption.reason == 'PhD Dissertation':
+            graduates.append(s)
+        elif exemption.reason == 'Not present':
+            not_present.append(s)
+        elif exemption.reason == 'Not Exempted':
+            nonexempt.append(s)
+        else:
+            exempt.append(s)
+    students = nonexempt + exempt + not_present + graduates
+            
+    return render_to_response('dssapp/student_dashboard.html', {'nonexempt': nonexempt, 'exempt': exempt, 'graduates': graduates, 'not_present': not_present, 'students': students},
                                 context_instance=RequestContext(request))
     
 def email_students(request):
@@ -242,7 +280,8 @@ def render_email_template(request):
 def message(request):
     msg_type = request.GET['msg']
     messages = {'prefsubmit': 'Thank you for submitting your preferences.',
-                'abstractsubmit': 'Thank you for sumitting your abstract.'}
+                'abstractsubmit': 'Thank you for sumitting your abstract.',
+                'permissions': 'You do not have the necessary permissions to view this page.'}
     return render_to_response('dssapp/message.html', {'message': messages[msg_type]})
     
 
@@ -375,3 +414,20 @@ def submit_abstract(request):
     talk.save()
 
     return HttpResponseRedirect("/message?msg=abstractsubmit")
+    
+    
+def add_exemption(request):
+    # make sure the person is logged in.
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('admin/')
+    
+    student_id = request.POST.get('student')
+    reason = request.POST.get('reason')
+    semester = most_recent_semester()
+    student = Student.objects.get(id=int(student_id))
+    
+    exemption, created = Exemption.objects.get_or_create(student=student, semester=semester)
+    exemption.reason = reason
+    exemption.save()
+    
+    return HttpResponseRedirect("exemptions")

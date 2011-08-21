@@ -35,11 +35,16 @@ class Command(BaseCommand):
         print "ADDING STUDENTS" + '-' * 60
         self.add_students(lines)
         
+        print "ADDING EXEMPTIONS" + '-' * 60
+        self.add_exemptions(lines)
+        
         print "ADDING EVENTS" + '-' * 60
         self.add_events(lines)
         
         print "ADDING TALKS" + '-' * 60
         self.add_talks(lines)
+        
+
         
         print "ADDING SOME DEFAULT TEMPLATES"
         submit_prefs = EmailTemplate(subject="Submit your preferences for DSS", name="SubmitPrefs", template="""
@@ -81,6 +86,31 @@ class Command(BaseCommand):
                     new_advisor.save()
                     print "Added advisor", advisor_name, ", id #", advisor_id
                     
+                    line = line.replace(match.groups()[0], '')
+                    match = my_regex.search(line)
+                    
+    def add_exemptions(self, lines):
+        alert_string = r"INSERT INTO `exemptions` VALUES";
+        
+        (1,'2009.7','PhD Dissertation')
+        
+        search_string = r"\(((\d+),'(.*?)','(.*?)'\))"
+        my_regex = re.compile(search_string)      
+        for line in lines:
+            if line.startswith(alert_string):
+                match = my_regex.search(line)
+                while match:
+                    exemption_id = int(match.groups()[1])
+                    exemption_semester = match.groups()[2]
+                    exemption_reason = match.groups()[3]
+                    conversion = {'exempted': 'Exempted for other reasons', 'not present': 'Not present'}
+                    if exemption_reason in conversion:
+                        exemption_reason = conversion[exemption_reason]
+                    student = Student.objects.get(id=exemption_id)
+                    new_exemption = Exemption(student=student, semester=string_to_semester(exemption_semester), reason=exemption_reason)
+                    new_exemption.save()
+                    print "Added exemption for", student, "during", exemption_semester
+
                     line = line.replace(match.groups()[0], '')
                     match = my_regex.search(line)
         
