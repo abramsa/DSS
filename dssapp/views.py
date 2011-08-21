@@ -5,6 +5,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from util import *
 from datetime import *
 from django.core.mail import EmailMessage
+from django import forms
+
 
 import settings
 
@@ -283,7 +285,37 @@ def message(request):
                 'abstractsubmit': 'Thank you for sumitting your abstract.',
                 'permissions': 'You do not have the necessary permissions to view this page.'}
     return render_to_response('dssapp/message.html', {'message': messages[msg_type]})
+   
+class DSSVideoForm(forms.Form):
+    video = forms.Field(widget=forms.FileInput, required=True)   
+ 
+def upload(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
     
+    talks = Talk.objects.all().order_by('-id')[0:25]
+    form = DSSVideoForm()
+    
+    return render_to_response('dssapp/upload.html', {'talks': talks, 'form': form},
+                                context_instance=RequestContext(request))
+    
+def upload_video(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
+    video = request.FILES['video']
+    talk_id = int(request.POST['talk_id'])
+    talk = Talk.objects.get(id=talk_id)
+    
+    extension = video.name[video.name.find('.'):]
+    file_name = settings.VIDEO_ROOT + talk.file_name() + extension
+    
+    destination = open(file_name, 'wb+')
+    for chunk in video.chunks():
+        destination.write(chunk)
+    destination.close()
+    
+    return HttpResponseRedirect('schedule')
+
 
 def admin(request):
     if request.user.is_authenticated():

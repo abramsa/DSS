@@ -84,13 +84,16 @@ class Talk(models.Model):
     def abstract_name(self):
         return self.abstract.replace(r'\n','<br/>').replace('\\\'','\'' )
         
+    def file_name(self):
+        event = self.event_set.get()
+        return event.timestamp.strftime('%Y-%m-%d') + '_' + self.student.name.replace(' ', '_')
+        
     def video_link(self):
         if not settings.VIDEO_ROOT:
             return None
         hosted_root = 'http://www.cse.wustl.edu/video/dsstalks/'
         
-        event = self.event_set.get()
-        file_name =  event.timestamp.strftime('%Y-%m-%d') + '_' + self.student.name.replace(' ', '_')
+        file_name =  self.file_name()
         for extension in ['.mp4', '.avi', '.mov', '.m4v', '.wmv', '.mpg',]:
             if os.path.exists(settings.VIDEO_ROOT + file_name + extension):
                 return hosted_root + file_name + extension
