@@ -5,6 +5,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from util import *
 from datetime import *
 from django.core.mail import EmailMessage
+from django import forms
+
 
 import settings
 
@@ -44,9 +46,32 @@ def schedule(request):
 def view_student(request, student_id):
     student = Student.objects.get(id=student_id)
     now = datetime.now()
-    return render_to_response('dssapp/view_student.html', {'student'     : student,
+    return render_to_response('dssapp/view_student.html', {'student': student,
                                                            'now' : now})
-                               
+
+def exemptions(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect("/message?msg=permissions")
+    
+    # gather all the exemptions for all students.
+    nonexempt = []
+    graduates = []
+    not_present = []
+    students = sort_by_last_name(Student.objects.all())
+    
+    for student in students:
+        exemption = exemption_status(student)
+        if exemption.reason == 'PhD Dissertation':
+            graduates.append(exemption)
+        elif exemption.reason == 'Not present':
+            not_present.append(exemption)
+        else:
+            nonexempt.append(exemption)
+    return render_to_response('dssapp/exemptions.html', {'nonexempt' : nonexempt,
+                                                         'graduates' : graduates,
+                                                         'not_present' : not_present},
+                                                         context_instance=RequestContext(request))
+    
                                
 def admin_schedule(request):
     # make sure the person is logged in.
@@ -91,7 +116,12 @@ def student_dashboard(request):
         return HttpResponseRedirect('admin/')
         
     students = Student.objects.filter(active=True)[:]
-    students = sorted(students, key=lambda x: x.name.split()[-1])  # sort by last name.
+    students = sort_by_last_name(students)
+    
+    graduates = []
+    not_present = []
+    nonexempt = []
+    exempt = []
     for s in students:
         emails = EmailSent.objects.filter(student=s).order_by('-timestamp')
         if len(emails) > 0:
@@ -104,14 +134,27 @@ def student_dashboard(request):
             s.responded = TalkPreference.objects.filter(student=s, event__semester=most_recent_semester()).exists()
         elif s.most_recent_email and s.most_recent_email.email.name == 'SubmitAbstract':
             s.responded = s.next_talk().abstract != None
-        
         else:
             s.responded = None
             
-    return render_to_response('dssapp/student_dashboard.html', {'students': students},
+        exemption = exemption_status(s)
+        if exemption.reason == 'PhD Dissertation':
+            graduates.append(s)
+        elif exemption.reason == 'Not present':
+            not_present.append(s)
+        elif exemption.reason == 'Not Exempted':
+            nonexempt.append(s)
+        else:
+            exempt.append(s)
+    students = nonexempt + exempt + not_present + graduates
+                
+    return render_to_response('dssapp/student_dashboard.html', {'nonexempt': nonexempt, 'exempt': exempt, 'graduates': graduates, 'not_present': not_present, 'students': students},
                                 context_instance=RequestContext(request))
     
 def email_students(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
+    
     students = []
     for param in request.POST:
         if param.endswith('box'):
@@ -125,6 +168,9 @@ def email_students(request):
                               context_instance=RequestContext(request))
                               
 def schedule_students(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
+    
     students = []
     for param in request.POST:
         if param.endswith('box'):
@@ -134,11 +180,25 @@ def schedule_students(request):
     semester_str = '2011.09'
     semester = string_to_semester(semester_str)
     
-    schedule_semester(semester, students)
+    schedule_semester_students(semester, students)
+    
+    return HttpResponseRedirect('schedule')
+    
+def schedule_judges(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
+    
+    schedule_semester_judges(most_recent_semester())
+    schedule_semester_judges(most_recent_semester())
+    schedule_semester_judges(most_recent_semester())
+    
     return HttpResponseRedirect('schedule')
     
     
 def send_email(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
+    
     template = request.POST['template']
     subject = request.POST['subject_line']
     
@@ -203,6 +263,9 @@ def abstract(request):
     
     
 def admin_preferences(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
+    
     if 'semester' in request.GET:
         semester_str = request.GET['semester']
         semester = string_to_semester(semester_str)
@@ -229,6 +292,9 @@ def admin_preferences(request):
 
 
 def render_email_template(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
+    
     try:
         template = Template(request.GET['template'])
         student_id = request.GET['student_id']
@@ -242,9 +308,40 @@ def render_email_template(request):
 def message(request):
     msg_type = request.GET['msg']
     messages = {'prefsubmit': 'Thank you for submitting your preferences.',
-                'abstractsubmit': 'Thank you for sumitting your abstract.'}
+                'abstractsubmit': 'Thank you for sumitting your abstract.',
+                'permissions': 'You do not have the necessary permissions to view this page.'}
     return render_to_response('dssapp/message.html', {'message': messages[msg_type]})
+   
+class DSSVideoForm(forms.Form):
+    video = forms.Field(widget=forms.FileInput, required=True)   
+ 
+def upload(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
     
+    talks = Talk.objects.all().order_by('-id')[0:25]
+    form = DSSVideoForm()
+    
+    return render_to_response('dssapp/upload.html', {'talks': talks, 'form': form},
+                                context_instance=RequestContext(request))
+    
+def upload_video(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('message?msg=permissions')
+    video = request.FILES['video']
+    talk_id = int(request.POST['talk_id'])
+    talk = Talk.objects.get(id=talk_id)
+    
+    extension = video.name[video.name.find('.'):]
+    file_name = settings.VIDEO_ROOT + talk.file_name() + extension
+    
+    destination = open(file_name, 'wb+')
+    for chunk in video.chunks():
+        destination.write(chunk)
+    destination.close()
+    
+    return HttpResponseRedirect('schedule')
+
 
 def admin(request):
     if request.user.is_authenticated():
@@ -375,3 +472,20 @@ def submit_abstract(request):
     talk.save()
 
     return HttpResponseRedirect("/message?msg=abstractsubmit")
+    
+    
+def add_exemption(request):
+    # make sure the person is logged in.
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('admin/')
+    
+    student_id = request.POST.get('student')
+    reason = request.POST.get('reason')
+    semester = most_recent_semester()
+    student = Student.objects.get(id=int(student_id))
+    
+    exemption, created = Exemption.objects.get_or_create(student=student, semester=semester)
+    exemption.reason = reason
+    exemption.save()
+    
+    return HttpResponseRedirect("exemptions")

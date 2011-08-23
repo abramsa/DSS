@@ -9,11 +9,11 @@
 		
 		
 		<script type="text/javascript">
-			function toggle_select_all(){
-				if ($('#select_all_students')[0].checked){
-					$('.student_box').attr('checked','checked')
+			function toggle_select_all(type){
+				if ($('#select_'+type+'_students')[0].checked){
+					$('.student_'+type+'_box').attr('checked','checked')
 				} else {
-					$('.student_box').removeAttr('checked')
+					$('.student_'+type+'_box').removeAttr('checked')
 				}
 				
 			}
@@ -55,32 +55,100 @@
 		<h1> Admin | Student Dashboard </h1>
 		
 		<h3> All Students </h3>
-		Select all:
-		<ul>
-			<li><input type="button" value="Students that must give talk next semester" onclick="alert(TODO)"/> </li>
-			<li><input type="button" value="Exempt students" onclick="alert(TODO)"/> </li>
-			<li><input type="button" value="Students that have not responded to latest email" onclick="select_nonresponsive_students()"/> </li>
-		</ul>
+		Select all
+			<input type="button" value="Students that have not responded to latest email" onclick="select_nonresponsive_students()"/> 
 		
 		
 		<form id="main_form" method="post" onsubmit="return choose_action()">
 			{% csrf_token %}
+			<h2> Regular Ph.D. Students </h2>
 			<table>
 				<tr>
-					<th> <input type="checkbox" id="select_all_students" onchange="toggle_select_all()" /> </th>
+					<th> <input type="checkbox" id="select_regular_students" onchange="toggle_select_all('regular')" /> </th>
 					<th> Name </th>
 					<th> Advisor (s) </th>
 					<th> Last Email Sent </th>
 					<th> Responded? </th>
+					<th> Last talk semester</th>
 				</tr>
 			
-				{% for s in students %}
+				{% for s in nonexempt %}
 				<tr>
-					<td class="center"> <input type="checkbox" id="{{s.id}}box" name="{{s.id}}box" class="student_box"/> </td>
+					<td class="center"> <input type="checkbox" id="{{s.id}}box" name="{{s.id}}box" class="student_regular_box"/> </td>
 					<td> {{s.name}} </td>
 					<td> {{s.all_advisors}} </td>
 					<td class="center"> {{s.most_recent_email}} </td>
 					<td class="center"> {{s.responded|yesno:"Yes, No"}} </td>
+					<td class="center"> {{s.last_talk.event_set.all.0.semester}}</td>
+				</tr>
+				{% endfor %}
+			</table>
+			
+			<h2> Exempt Ph.D. Students </h2>
+			<table>
+				<tr>
+					<th> <input type="checkbox" id="select_exempt_students" onchange="toggle_select_all('exempt')" /> </th>
+					<th> Name </th>
+					<th> Advisor (s) </th>
+					<th> Last Email Sent </th>
+					<th> Responded? </th>
+					<th> Last talk semester</th>
+				</tr>
+			
+				{% for s in exempt %}
+				<tr>
+					<td class="center"> <input type="checkbox" id="{{s.id}}box" name="{{s.id}}box" class="student_exempt_box"/> </td>
+					<td> {{s.name}} </td>
+					<td> {{s.all_advisors}} </td>
+					<td class="center"> {{s.most_recent_email}} </td>
+					<td class="center"> {{s.responded|yesno:"Yes, No"}} </td>
+					<td class="center"> {{s.last_talk.event_set.all.0.semester}}</td>
+				</tr>
+				{% endfor %}
+			</table>
+			
+			<h2> Graduates </h2>
+			<table>
+				<tr>
+					<th> <input type="checkbox" id="select_graduate_students" onchange="toggle_select_all('graduate')" /> </th>
+					<th> Name </th>
+					<th> Advisor (s) </th>
+					<th> Last Email Sent </th>
+					<th> Responded? </th>
+					<th> Last talk semester</th>
+				</tr>
+			
+				{% for s in graduates %}
+				<tr>
+					<td class="center"> <input type="checkbox" id="{{s.id}}box" name="{{s.id}}box" class="student_graduate_box"/> </td>
+					<td> {{s.name}} </td>
+					<td> {{s.all_advisors}} </td>
+					<td class="center"> {{s.most_recent_email}} </td>
+					<td class="center"> {{s.responded|yesno:"Yes, No"}} </td>
+					<td class="center"> {{s.last_talk.event_set.all.0.semester}}</td>
+				</tr>
+				{% endfor %}
+			</table>
+			
+			<h2> Not present </h2>
+			<table>
+				<tr>
+					<th> <input type="checkbox" id="select_notpresent_students" onchange="toggle_select_all('notpresent')" /> </th>
+					<th> Name </th>
+					<th> Advisor (s) </th>
+					<th> Last Email Sent </th>
+					<th> Responded? </th>
+					<th> Last talk semester</th>
+				</tr>
+			
+				{% for s in not_present %}
+				<tr>
+					<td class="center"> <input type="checkbox" id="{{s.id}}box" name="{{s.id}}box" class="student_notpresent_box"/> </td>
+					<td> {{s.name}} </td>
+					<td> {{s.all_advisors}} </td>
+					<td class="center"> {{s.most_recent_email}} </td>
+					<td class="center"> {{s.responded|yesno:"Yes, No"}} </td>
+					<td class="center"> {{s.last_talk.event_set.all.0.semester}}</td>
 				</tr>
 				{% endfor %}
 			</table>

@@ -1,0 +1,36 @@
+{% extends "dssapp/base.html" %}
+
+{% block title %}DSS Upload{% endblock %}
+
+{% block pagetitle %}  
+	Upload DSS Video
+{%endblock%}
+	
+{% block head %}	
+	
+{% endblock %}
+		
+{% block content %}
+
+	<form method="post" action="upload_video" enctype="multipart/form-data">
+		{% csrf_token %}
+		<p>
+			Upload a video: {{form}}
+		</p>
+	
+		<p>
+			For talk:
+			<table>
+			{% for talk in talks %}
+				<tr>
+					<td><input type='radio' name='talk_id' value='{{talk.id}}' /> </td>
+					<td>{{talk.student}}</td>
+					<td>{{talk.event_set.all.0.semester}}</td>
+				</tr>
+			{% endfor %}
+			</table>
+		
+			<input type="submit" />
+		</p>
+	</form>
+{% endblock %}
