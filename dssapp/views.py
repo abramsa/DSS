@@ -145,6 +145,7 @@ def student_dashboard(request):
         elif exemption.reason == 'Not Exempted':
             nonexempt.append(s)
         else:
+            s.reason = exemption.reason
             exempt.append(s)
     students = nonexempt + exempt + not_present + graduates
                 
@@ -276,6 +277,7 @@ def admin_preferences(request):
     
     students = Student.objects.filter(active=True)[:]
     students = sorted(students, key=lambda x: x.name.split()[-1])  # sort by last name.
+    students = [student for student in students if exemption_status(student).reason == 'Not Exempted']
     
     events = Event.objects.filter(event_type='DSS', semester=semester)
     for s in students:
@@ -475,9 +477,6 @@ def submit_abstract(request):
     
     
 def add_exemption(request):
-    # make sure the person is logged in.
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('admin/')
     
     student_id = request.POST.get('student')
     reason = request.POST.get('reason')
@@ -488,4 +487,15 @@ def add_exemption(request):
     exemption.reason = reason
     exemption.save()
     
-    return HttpResponseRedirect("exemptions")
+    if 'redirect' in request.POST:
+        # this came from the preference submission page, so we should make sure that this student
+        # is not available for any DSS talks.
+        events = Event.objects.filter(semester=semester)
+        for e in events:
+            talk_preference, created = TalkPreference.objects.get_or_create(student=student, event=e, preference='cannot')
+            talk_preference.save()
+        
+        
+        return HttpResponseRedirect('/message?msg=prefsubmit')
+    else:
+        return HttpResponseRedirect("exemptions")

@@ -93,6 +93,7 @@
 					<th> Last Email Sent </th>
 					<th> Responded? </th>
 					<th> Last talk semester</th>
+					<th> Exemption reason </th>
 				</tr>
 			
 				{% for s in exempt %}
@@ -103,6 +104,8 @@
 					<td class="center"> {{s.most_recent_email}} </td>
 					<td class="center"> {{s.responded|yesno:"Yes, No"}} </td>
 					<td class="center"> {{s.last_talk.event_set.all.0.semester}}</td>
+					<td class="center"> {{s.reason}}</td>
+					
 				</tr>
 				{% endfor %}
 			</table>

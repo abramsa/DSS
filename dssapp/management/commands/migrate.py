@@ -67,6 +67,18 @@ class Command(BaseCommand):
         Your friendly DSS Chairs""")
         submit_abstract.save()
        
+        submit_abstract_reminder = EmailTemplate(subject="Submit your abstract for DSS", name="SubmitAbstractReminder", template="""
+        Dear {{student.name}},
+
+                As a reminder, your DSS talk is coming up soon, on {{student.next_talk.event_set.all.0.timestamp}}.
+                We currently do not have an abstract for your talk.  Please fill out your abstract as soon as possible:
+
+                http://127.0.0.1/abstract?talk_id={{student.next_talk.id}}&student_key={{student.web_key}}
+
+        Thanks,
+        Your friendly DSS Chairs""")
+        submit_abstract_reminder.save()
+        
         
     def add_advisors(self, lines):
         alert_string = r"INSERT INTO `advisors` VALUES";
