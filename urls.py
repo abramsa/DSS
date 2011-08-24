@@ -48,6 +48,8 @@ urlpatterns = patterns('',
     (r'^send_email$', dssapp.views.send_email),
 
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
-                'document_root': settings.MEDIA_ROOT,
+                'document_root': settings.STATIC_ROOT,
             }),
+    url(r'^admin_media/(?P<path>.*)$', 'django.views.static.serve', {
+                'document_root': '/research-www/engineering/dss.cse/local/lib/python2.7/site-packages/django/contrib/admin/media/'}),
 )

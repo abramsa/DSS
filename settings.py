@@ -45,7 +45,8 @@ USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/research-www/engineering/dss.cse/dss/static/'
+MEDIA_ROOT = '/research-www/engineering/dss.cse/local/lib/python2.7/site-packages/django/contrib/admin/'
+STATIC_ROOT = '/research-www/engineering/dss.cse/dss/static/'
 VIDEO_ROOT = '/project/cse-video/dsstalks/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
@@ -56,7 +57,7 @@ MEDIA_URL = ''
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = '/admin_media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '8-hcg%y9&z3^2w)adn4vf*xaixauvaid^n1%g_u$#$ydnqrvqz'
