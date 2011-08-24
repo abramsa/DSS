@@ -99,27 +99,43 @@ Here are the steps to create a DSS schedule:
    scheduled for that date, and delete that event by clicking on the "Delete 
    this event" on the right side of the page.
 
-4. If you anticipate that there will be more events than students can fill, feel
-   free to add a Hot Topics event in lieu of a regular DSS event.  This is a bit 
-   more freeform, but in the past we've had successful Hot Topics events, and 
-   it's a good way to get the department to pay for pizza.  Creating a Hot
-   Topics event is similar to creating a Break.
+4. Get a list of students just beginning their second year of their PhD from
+   the department office, along with their e-mail addresses and advisor(s).  
+   First-year students are exempt from giving DSS talks, so we start with 
+   second-years.  Go to
 
-5. Now that you know which dates will have DSS events, it's time to schedule
+   http://dss.cse.wustl.edu/admin
+
+   And click on "Create/Modify/Delete Students".  Use this interface to add each
+   new second-year student or modify new ones (if someone changes their advisor, 
+   for example). Also, if there are new faculty or retired faculty, you can use 
+   "Create/Modify/Delete Advisors" to update that.  For sake of database 
+   consistency, do not delete anybody, but instead mark them as inactive.  They
+   were someone's advisor at some point.
+
+5. Go back to the admin page and click on "Email/Schedule Students".  This has
+   a listing of all the active students in the department, along with their 
+   exemption status.  Their exemption status is the last semester's reasoning
+   for why they didn't give a talk, and it may very well be out of date.  We
+   will determine their true eligibility in future steps.
+
+   In the next year, you should hope to schedule everyone
+   in the "Regular Students" group, and probably some of the "Exempt" students 
+   as well.  You should try to make sure the spring DSS schedule has about the 
+   same number of students as the fall DSS schedule.  Assuming that all "Exempt"
+   students are now eligible for DSS, add up the number of total students you
+   need to schedule, and divide by 4.  This is the number of events you should
+   have each semester (2 talks per event, 2 semesters a year).  If you need to, 
+   go back and add/delete some events to the schedule.
+
+6. Now that you know which dates will have DSS events, it's time to schedule
    some students into those events.  Go back to 
 
    http://dss.cse.wustl.edu/admin
 
-   And click on "Email/Schedule Students"
-
-6. This is a list of all currently-known students in the department.  Through 
-   this interface, we can select students and email them or schedule them in 
-   large groups.
-	
-   Find out which students must give their DSS talk in the next two 
-   semesters, select them by clicking on their checkboxes, and scroll to the 
-   bottom of the page.  Make sure that the button is set to "Email Students",
-   and click "Submit".
+   And click on "Email/Schedule Students".  Select all Regular and Exempt 
+   students that did not present last semester, and all exempt students.  Make 
+   sure that the button is set to "Email Students", and click "Submit".
 
 7. This will bring up an interface where you can write emails to students.
    There are already a few templates that you should probably use.  Under
@@ -145,11 +161,10 @@ Here are the steps to create a DSS schedule:
 
    http://dss.cse.wustl.edu/admin
 
-   and clicking on "View Schedule Preferences".
-
-   Note that the rules for exemptions are in the email. If you have any
-   questions about what should be an exemption, ask the Doctoral Program
-   Committee chair (aka Dr Pless in 2011).
+   and clicking on "View Schedule Preferences".  At this point, students are
+   free to mark if they are exempt, and we trust that they are giving us
+   the right information.  If they mark themselves as exempt, then they will
+   be excluded from the schedule for this semester.
 
 9. A few days before people are supposed to have responded, check for
    stragglers (on the list of students that you can email, there is a column 
@@ -165,13 +180,17 @@ Here are the steps to create a DSS schedule:
 
    http://dss.cse.wustl.edu/admin
 
-   and clicking on "Create/Modify/Delete Students".
+   and clicking on "Create/Modify/Delete Students".  You can modify a student's 
+   exemptions by clicking on "View/Modify Exemptions".
 
 10. Once you're ready to build up the schedule, click on "Email/Schedule 
-	Students".  To schedule a group of students, select them, make sure 
-	"Schedule Students" is selected, and click "Submit".  This will create a 
-	scheduling optimization problem (solved by Munkres algorithm, FYI) that will 
-	try to maximize the "happiness" of everybody against their preferences.
+	Students".  Select all Regular students that did not give a talk
+	last semester.  At the bottom of the page, select "Schedule Students"
+	and click "Submit"
+	
+	This will create a scheduling optimization problem (solved by Munkres 
+	algorithm, FYI) that will try to maximize the "happiness" of everybody 
+	against their preferences.
 	
 	You should make sure to schedule the students that ABSOLUTELY MUST present
 	next semester first, as one big group, and then after those have been
@@ -189,39 +208,83 @@ Here are the steps to create a DSS schedule:
 	to any other day would cause one or more people to present on a day when
 	they couldn't, and someone's gotta take the fall.
 	
-11. About a week before a student is scheduled to give a talk, use the email
-    interface to send them the SubmitAbstract email.  This will prompt the
-    student to fill in information about their talk.  If a student neglects
-    to fill in this information, you are free to fill it in yourself courtesy
-    of the Automatic CS Paper Generator, found here:
+11. Once the schedule is set up, go to the admin site and click "Schedule
+    Judges".  This will schedule faculty members to judge the DSS talks, so 
+	that:
+		1. None of the judge's students are presenting that day, and
+		2. At least one of the judge's students said that they were available to
+		   give a talk that day.  Since students should sign up so that both
+		   they and their advisors are available that day, the advisor should
+		   be available.
+
+12. (CURRENTLY A TODO) Email grads@ and csf@ to tell them that the new schedule
+    is up.
+	
+13. About a week before a student is scheduled to give a talk, an email will go
+    out to the students presenting that their abstracts need to be submitted.  
+	This will prompt the student to fill in information about their talk.  If a 
+	student neglects to fill in this information, you are free to fill it in 
+	yourself courtesy of the Automatic CS Paper Generator, found here:
 
 	http://pdos.csail.mit.edu/scigen/
 
-12. Give yourself a great big pat on the back!!!
+	Or just ignore it.  There's another email that goes out on Thursday that
+	will say "No abstract submitted" and it looks really embarrassing for that
+	student.
+
+14. Give yourself a great big pat on the back!!!
 
 
 %%%%%
 3. Running the Events
 %%%%%
 
-FIXME: write this!!!
+The first thing to do is set up the food. A cron job automatically sends an 
+email to Kelli (as of Jan 2011) with the pizza order, which will arrive in the 
+CSE office around 12PM. Make sure you leave enough time to
+set up the food and give people time to get their food so you can start on time. 
+In addition to pizza, we provide drinks and snacks. 6-7 2 liter bottles of soda 
+and 5-6 bags of chips/pretzels/etc. seems to be a good amount.
+After setup, there are two jobs: running the camera, and dealing with the 
+speakers. DSS owns a camcorder and tripod which should be placed somewhere where 
+both the speaker and screen are visible, and close enough to pick up the 
+speaker's voice. The other person is responsible for introducing speakers,
+keeping track of how much time they have left and making sure to cut o 
+questions after time is up.
 
+Once you're ready to upload a video, go to the admin site, click on "Upload 
+Video", select the talk, and upload away.  This will give your file the right 
+naming convention and put it in the right place.
+
+%%%%%
+4. Dealing with Troublemakers
+%%%%%
+Most doctoral students are conscientious and responsible, but every semester 
+there will be one or two students who make your job harder. This comes in a few 
+forms:
+
+-  Shortly before their scheduled slot, a student emails/calls/stops by saying 
+they didn't know they were scheduled to speak and can't go during their 
+scheduled time. Don't feel bad about telling them tough luck. They are welcome 
+to switch with another student who was scheduled later in the semester, but
+the DSS chairs are under no obligation to find someone to switch for them or to 
+remove the student from the schedule.
+- Shortly before their scheduled slot, a student emails/calls/stops by saying 
+that their advisor does not want them to go during their slot. Ask the student 
+to try to find someone to switch with. If they can't, just remove them from the 
+schedule. However, if you do remove them from the schedule, make sure to notify 
+the doctoral program chair of the situation (a quick email is sufficient).
+It's not your job to fight with students or faculty about scheduling. Don't 
+stress out about it, and if there's a situation that you can't resolve, don't 
+feel bad about bumping it up to the doctoral program chair (Dr. Pless in August 
+2011).
 
 %%%%%
 4. Remaining TODOs
 %%%%%
-
-(TODO: Put the rules for exemptions in the email, and allow a user to request 
-	an exemption)
 
 (TODO: Send out emails after being scheduled)
 
 (TODO: Ajaxify the send_email page so that the admin can see progress.)
 
 (TODO: Automatically send email to the department advertising this week's DSS events)
-
-(TODO: Upload a video to the server)
-
-(BIG TODO: How do we find out which students are active and/or which students 
-	have to give a talk in the next semester?  Maybe send Madeline a way to mark 
-	this?)

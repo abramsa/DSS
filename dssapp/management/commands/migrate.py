@@ -47,26 +47,60 @@ class Command(BaseCommand):
 
         
         print "ADDING SOME DEFAULT TEMPLATES"
-        submit_prefs = EmailTemplate(subject="Submit your preferences for DSS", name="SubmitPrefs", template="""
-        Dear {{student.name}},
-        
-        The time has come again to submit your preferences for next semester of DSS.  If anyone but Austin
-        receives this email, then he's a terrible programmer and you should ignore this email.
-        
-        http://127.0.0.1:8000/schedule_preference?semester=2011.09&student_key={{student.web_key}}""")
+        submit_prefs = EmailTemplate(subject="DSS Scheduling", name="SubmitPrefs", template="""
+{{student.name}},
+
+It is time once again to schedule DSS talks. Our records indicate that you are eligible to give a talk in {{semester}}. This is a great opportunity to practice giving a talk and to share your ideas with the department. It is also required if you have taken any doctoral research credits in the last academic year and you do not meet any of the exemption conditions.
+
+IF YOU ARE EXEMPT FROM GIVING A TALK THIS SEMESTER, PLEASE INDICATE IT ON THE LINK BELOW.
+
+WHAT YOU NEED TO DO:
+
+Access the following web page to record any exemptions and/or scheduling preferences. All the necessary instructions are there:
+
+http://127.0.0.1:8000/schedule_preference?semester={{semester.year}}.{{semester.month}}&student_key={{student.web_key}}
+
+IF WE DO NOT HEAR FROM YOU BY 11:59pm WEDNESDAY, SEPTEMBER 7th, WE WILL ASSUME WE CAN SCHEDULE YOU ANY TIME THIS UPCOMING SEMESTER.
+
+Note also that ties in scheduling preferences will be broken in favor of whoever filled out the above web page first. You will thus be more likely to be scheduled when you want if you submit your preferences early.
+
+Please let us know if you have any questions or problems.
+
+Thanks,
+{{chairs}}
+DSS co-chairs""")
         submit_prefs.save()
         
-        submit_abstract = EmailTemplate(subject="Submit your abstract for DSS", name="SubmitAbstract", template="""
-        Dear {{student.name}},
+        submit_abstract = EmailTemplate(subject="Your DSS Abstract", name="SubmitAbstract", template="""
+{{student.name}},
 
-                As a reminder, your DSS talk is coming up soon, on {{student.next_talk.event_set.all.0.timestamp}}  Please fill out your abstract in a timely fashion by going to this URL:
+This is to remind you that you are scheduled to give a DSS talk on {{student.next_talk.event_set.all.0.timestamp}}.  Please POST A TITLE AND ABSTRACT BY 11:59 PM ON TUESDAY, using the following link:
 
-                http://127.0.0.1/abstract?talk_id={{student.next_talk.id}}&student_key={{student.web_key}}
+http://127.0.0.1:8000/abstract?talk_id={{student.next_talk.id}}&student_key={{student.web_key}}
 
-        Thanks,
-        Your friendly DSS Chairs""")
+so that we can advertise the talk. Also, please remember to NUMBER YOUR SLIDES.
+
+If you are not familiar with the format, DSS talks are 25 minutes, with 5 minutes at the end for questions. This is a strict time limit. Talks should be on original research that you are participating in as a student.  Since the faculty and doctoral students of the department at large will be attending your talk, it is important to write your talk for a general CS audience: do not assume the listeners know or understand the important terms/algorithms/problems/etc in your field. Each talk is judged by three faculty members to help decide the best talk of the semester. The student with this best talk is rewarded with a certificate and a cash-valued prize.
+
+As a final point, we strongly encourage you to practice your talk with an audience, especially with students outside your field, so that you can give the best talk possible.
+
+Thanks,
+{{chairs}}
+DSS co-chairs""")
         submit_abstract.save()
        
+        submit_abstract_reminder = EmailTemplate(subject="Submit your abstract for DSS", name="SubmitAbstractReminder", template="""
+{{student.name}},
+
+We still have not received a title and/or abstract from you for your talk this Friday. Please POST A TITLE AND ABSTRACT BY 11:59 PM ON TUESDAY, using the following link:
+
+http://127.0.0.1:8000/abstract?talk_id={{student.next_talk.id}}&student_key={{student.web_key}}
+
+Thanks,
+{{chairs}}
+DSS co-chairs""")
+        submit_abstract_reminder.save()
+        
         
     def add_advisors(self, lines):
         alert_string = r"INSERT INTO `advisors` VALUES";

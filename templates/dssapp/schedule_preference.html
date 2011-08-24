@@ -21,8 +21,21 @@
 	do not fill out this form in a timely fashion, <span class="emph">we reserve the right to schedule you 
     during any of these days.</span> </p>
 
-
-<p> If you believe that you are exempt from giving a DSS talk, please contact the DSS chairs as soon as possible! </p>
+<p> If you are exempt from giving a DSS talk, please notify that here:
+		<form method="post" action="add_exemption">
+		{% csrf_token %}
+		<input type="hidden" name="student" value="{{student.id}}" />
+		<input type="hidden" name="redirect" value="message" />
+		<select name="reason" name="reason" onchange="form.submit()">
+			<option> PhD Dissertation</option>
+			<option> PhD Proposal</option>
+			<option> MS Thesis</option>
+			<option> Not present </option>
+			<option> Exempted for other reasons </option>
+			<option> First-year student </option>
+		</select>
+		</form> 
+	</p>
 
 	<div class="clear"> </div>
 		

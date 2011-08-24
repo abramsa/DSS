@@ -1,0 +1,118 @@
+{% extends "dssapp/base.html" %}
+
+{% block title %}DSS Exemptions{% endblock %}
+
+{% block pagetitle %}  
+	DSS Exemptions
+{%endblock%}
+
+{% block head %}
+
+{% endblock %}
+
+
+{% block content %}
+
+<p> Hi, office staff!  We're going to be creating the DSS schedule soon, and we 
+	need your help determining which students are eligible to do DSS this 
+	semester, and which have exemptions from giving talks.  These are our most 
+	recent records for the students in the department.</p>
+
+<div>
+	<h3> Regular Students </h3>
+	
+	<table>
+		<tr>
+			<th>Student</th>
+			<th>Exemption Status</th>
+			<th>Update</th>
+		</tr>
+		
+		{% for ex in nonexempt %}
+		<tr>
+			<td>{{ex.student.name}}</td>
+			<td>{{ex.reason}}</td>
+			<td><form method="post" action="add_exemption">
+				{% csrf_token %}
+				<input type="hidden" name="student" value="{{ex.student.id}}" />
+				<select name="reason" name="reason" onchange="form.submit()">
+					<option {% ifequal ex.reason "Not Exempted" %}selected{% endifequal %}> Not Exempted </option>
+					<option {% ifequal ex.reason "PhD Dissertation" %}selected{% endifequal %}> PhD Dissertation</option>
+					<option {% ifequal ex.reason "PhD Proposal" %}selected{% endifequal %}> PhD Proposal</option>
+					<option {% ifequal ex.reason "MS Thesis" %}selected{% endifequal %}> MS Thesis</option>
+					<option {% ifequal ex.reason "Not present" %}selected{% endifequal %}> Not present </option>
+					<option {% ifequal ex.reason "Exempted for other reasons" %}selected{% endifequal %}> Exempted for other reasons </option>
+				</select>
+				</form>
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
+	
+	<h3> Graduates </h3>
+	<table>
+		<tr>
+			<th>Student</th>
+			<th>Exemption Status</th>
+			<th>Update</th>
+		</tr>
+		
+		{% for ex in graduates %}
+		<tr>
+			<td>{{ex.student.name}}</td>
+			<td>{{ex.reason}}</td>
+			<td><form method="post" action="add_exemption">
+				{% csrf_token %}
+				<input type="hidden" name="student" value="{{ex.student.id}}" />
+				<select name="reason" name="reason" onchange="form.submit()">
+					<option {% ifequal ex.reason "Not Exempted" %}selected{% endifequal %}> Not Exempted </option>
+					<option {% ifequal ex.reason "PhD Dissertation" %}selected{% endifequal %}> PhD Dissertation</option>
+					<option {% ifequal ex.reason "PhD Proposal" %}selected{% endifequal %}> PhD Proposal</option>
+					<option {% ifequal ex.reason "MS Thesis" %}selected{% endifequal %}> MS Thesis</option>
+					<option {% ifequal ex.reason "Not present" %}selected{% endifequal %}> Not present </option>
+					<option {% ifequal ex.reason "Exempted for other reasons" %}selected{% endifequal %}> Exempted for other reasons </option>
+				</select>
+				</form>
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
+	
+	<h3> Not Present </h3>
+	
+	<table>
+		<tr>
+			<th>Student</th>
+			<th>Exemption Status</th>
+			<th>Update</th>
+		</tr>
+		
+		{% for ex in not_present %}
+		<tr>
+			<td>{{ex.student.name}}</td>
+			<td>{{ex.reason}}</td>
+			<td><form method="post" action="add_exemption">
+				{% csrf_token %}
+				<input type="hidden" name="student" value="{{ex.student.id}}" />
+				<select name="reason" name="reason" onchange="form.submit()">
+					<option {% ifequal ex.reason "Not Exempted" %}selected{% endifequal %}> Not Exempted </option>
+					<option {% ifequal ex.reason "PhD Dissertation" %}selected{% endifequal %}> PhD Dissertation</option>
+					<option {% ifequal ex.reason "PhD Proposal" %}selected{% endifequal %}> PhD Proposal</option>
+					<option {% ifequal ex.reason "MS Thesis" %}selected{% endifequal %}> MS Thesis</option>
+					<option {% ifequal ex.reason "Not present" %}selected{% endifequal %}> Not present </option>
+					<option {% ifequal ex.reason "Exempted for other reasons" %}selected{% endifequal %}> Exempted for other reasons </option>
+				</select>
+				</form>
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
+	
+	
+
+</div>
+
+TODO: new students
+TODO: active/inactive students
+
+{% endblock %}
