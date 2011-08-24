@@ -163,15 +163,15 @@ DSS co-chairs""")
                     if my_name == 'NULL':
                         my_name = None
                     my_nickname = match.groups()[3]
-                    #my_email = match.groups()[4]
-                    my_email = 'austin.abrams@gmail.com'
+                    my_email = match.groups()[4]
+                    #my_email = 'austin.abrams@gmail.com'
                     my_advisor = int(match.groups()[5])
                     my_semester = match.groups()[6]
                     my_active = match.groups()[7] == '1'
                     my_web_key = random.randint(10**8,10**9)  # random 9-digit number
                     
                     semester = string_to_semester(my_semester)
-                    new_student = Student(id=my_id, name=my_name, nickname=my_nickname, email=my_email, start_semester=semester, active=my_active, web_key=my_web_key )
+                    new_student, created = Student.objects.get_or_create(id=my_id, name=my_name, nickname=my_nickname, email=my_email, start_semester=semester, active=my_active, web_key=my_web_key )
                     new_student.save()
                     
                     advisor = Advisor.objects.get(id=my_advisor)
