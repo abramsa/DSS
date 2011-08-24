@@ -58,7 +58,7 @@ WHAT YOU NEED TO DO:
 
 Access the following web page to record any exemptions and/or scheduling preferences. All the necessary instructions are there:
 
-http://127.0.0.1:8000/schedule_preference?semester={{semester.year}}.{{semester.month}}&student_key={{student.web_key}}
+http://dss.cse.wustl.edu/schedule_preference?semester={{semester.year}}.{{semester.month}}&student_key={{student.web_key}}
 
 IF WE DO NOT HEAR FROM YOU BY 11:59pm WEDNESDAY, SEPTEMBER 7th, WE WILL ASSUME WE CAN SCHEDULE YOU ANY TIME THIS UPCOMING SEMESTER.
 
@@ -76,7 +76,7 @@ DSS co-chairs""")
 
 This is to remind you that you are scheduled to give a DSS talk on {{student.next_talk.event_set.all.0.timestamp}}.  Please POST A TITLE AND ABSTRACT BY 11:59 PM ON TUESDAY, using the following link:
 
-http://127.0.0.1:8000/abstract?talk_id={{student.next_talk.id}}&student_key={{student.web_key}}
+http://dss.cse.wustl.edu/abstract?talk_id={{student.next_talk.id}}&student_key={{student.web_key}}
 
 so that we can advertise the talk. Also, please remember to NUMBER YOUR SLIDES.
 
@@ -94,7 +94,7 @@ DSS co-chairs""")
 
 We still have not received a title and/or abstract from you for your talk this Friday. Please POST A TITLE AND ABSTRACT BY 11:59 PM ON TUESDAY, using the following link:
 
-http://127.0.0.1:8000/abstract?talk_id={{student.next_talk.id}}&student_key={{student.web_key}}
+http://dss.cse.wustl.edu/abstract?talk_id={{student.next_talk.id}}&student_key={{student.web_key}}
 
 Thanks,
 {{chairs}}
@@ -168,7 +168,7 @@ DSS co-chairs""")
                     my_advisor = int(match.groups()[5])
                     my_semester = match.groups()[6]
                     my_active = match.groups()[7] == '1'
-                    my_web_key = random.randint(10**9,10**10)  # random 10-digit number
+                    my_web_key = random.randint(10**8,10**9)  # random 9-digit number
                     
                     semester = string_to_semester(my_semester)
                     new_student = Student(id=my_id, name=my_name, nickname=my_nickname, email=my_email, start_semester=semester, active=my_active, web_key=my_web_key )
