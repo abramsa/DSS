@@ -221,7 +221,7 @@ def send_email(request):
             student_id = int(param.replace('student', ''))
             student = Student.objects.get(id=student_id)
             
-            email_content = Template(template).render(Context({'student': student}))
+            email_content = Template(template).render(Context({'student': student, 'chairs': settings.DSS_CHAIRS, 'semester': most_recent_semester()})}))
             
             email = EmailMessage(subject, email_content, to=[student.email])
             email.send()
