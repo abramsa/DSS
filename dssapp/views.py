@@ -222,7 +222,6 @@ def send_email(request):
             student = Student.objects.get(id=student_id)
             
             email_content = Template(template).render(Context({'student': student}))
-            assert student.email == 'austin.abrams@gmail.com'
             
             email = EmailMessage(subject, email_content, to=[student.email])
             email.send()
