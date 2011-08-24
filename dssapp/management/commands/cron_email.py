@@ -50,7 +50,6 @@ class Command(BaseCommand):
         
         for student in students:
             email_content = Template(template.template).render(Context({'student': student}))
-            assert student.email == 'austin.abrams@gmail.com'
         
             email = EmailMessage(template.subject, email_content, to=[student.email])
             email.send()
@@ -80,7 +79,6 @@ class Command(BaseCommand):
         for student in students:
             
             email_content = Template(template.template).render(Context({'student': student}))
-            assert student.email == 'austin.abrams@gmail.com'
         
             email = EmailMessage(template.subject, email_content, to=[student.email])
             email.send()
@@ -102,7 +100,7 @@ class Command(BaseCommand):
         event = events[0]
         
         # to = [grads@cse.wustl.edu, csf@cse.wustl.edu]
-        to = ["austin.abrams@gmail.com"]
+        to = []
         
         if event.event_type == 'Break':
             email_content = """
