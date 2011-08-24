@@ -1,5 +1,8 @@
 # Django settings for dss project.
 
+DSS_CHAIRS = 'Peng Li and Chengjie Wu'
+DSS_CHAIR_EMAILS = ['wuchengjievip@gmail.com', 'pengli@go.wustl.edu']
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 

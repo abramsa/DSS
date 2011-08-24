@@ -10,7 +10,6 @@ from django import forms
 
 import settings
 
-
 # Front-facing views ------------------------------------------------
 def schedule(request):
     
@@ -301,7 +300,7 @@ def render_email_template(request):
         template = Template(request.GET['template'])
         student_id = request.GET['student_id']
         student = Student.objects.get(id=int(student_id))
-        result = template.render(Context({'student': student}))
+        result = template.render(Context({'student': student, 'chairs': settings.DSS_CHAIRS, 'semester': most_recent_semester()}))
     except TemplateSyntaxError as e:
         result = 'Template syntax error: ' + str(e)
     
