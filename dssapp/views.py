@@ -460,7 +460,7 @@ def submit_preferences(request):
         try:
             talk_preference, created = TalkPreference.objects.get_or_create(student=student, event=event,
                             defaults={'preference': request.POST[pref]})
-        except MultipleObjectsReturned:
+        except TalkPreference.MultipleObjectsReturned:
             TalkPreference.objects.filter(student=student, event=event).delete()
             talk_preference = TalkPreference(student=student, event=event)
             
