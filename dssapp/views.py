@@ -445,12 +445,20 @@ def submit_preferences(request):
     
     preferences = [x for x in request.POST if x.endswith('preference') ]
     
+    exemption = exemption_status(student)
+    exemption.reason = 'Not Exempted'
+    exemption.save()
+    
     for pref in preferences:
         event_id = int(pref[0:-len("preference")])
         event = Event.objects.get(pk=event_id)
-
-        talk_preference, created = TalkPreference.objects.get_or_create(student=student, event=event,
-                          defaults={'preference': request.POST[pref]})
+        try:
+            talk_preference, created = TalkPreference.objects.get_or_create(student=student, event=event,
+                            defaults={'preference': request.POST[pref]})
+        except MultipleObjectsReturned:
+            TalkPreference.objects.filter(student=student, event=event).delete()
+            talk_preference = TalkPreference(student=student, event=event)
+            
         if not created:
             talk_preference.preference = request.POST[pref]
         
