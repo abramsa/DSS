@@ -488,7 +488,6 @@ def submit_abstract(request):
 	
 	
 def add_exemption(request):
-	
 	student_id = request.POST.get('student')
 	reason = request.POST.get('reason')
 	semester = most_recent_semester()
