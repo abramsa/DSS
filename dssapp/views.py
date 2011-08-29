@@ -239,7 +239,12 @@ def schedule_preference(request):
     student = get_object_or_404(Student, web_key=student_key)
     
     events = Event.objects.filter(semester=semester, event_type="DSS").order_by('timestamp')
-    
+    for e in events:
+        try:
+            preference = TalkPreference.objects.get(student=student, event=e)
+            e.pref = preference.preference
+        except TalkPreference.DoesNotExist:
+            e.pref = 'available'
     
     return render_to_response('dssapp/schedule_preference.html', {'semester': semester, 'student': student, 'events': events},
                               context_instance=RequestContext(request))
@@ -445,12 +450,20 @@ def submit_preferences(request):
     
     preferences = [x for x in request.POST if x.endswith('preference') ]
     
+    exemption = exemption_status(student)
+    exemption.reason = 'Not Exempted'
+    exemption.save()
+    
     for pref in preferences:
         event_id = int(pref[0:-len("preference")])
         event = Event.objects.get(pk=event_id)
-
-        talk_preference, created = TalkPreference.objects.get_or_create(student=student, event=event,
-                          defaults={'preference': request.POST[pref]})
+        try:
+            talk_preference, created = TalkPreference.objects.get_or_create(student=student, event=event,
+                            defaults={'preference': request.POST[pref]})
+        except MultipleObjectsReturned:
+            TalkPreference.objects.filter(student=student, event=event).delete()
+            talk_preference = TalkPreference(student=student, event=event)
+            
         if not created:
             talk_preference.preference = request.POST[pref]
         
@@ -490,7 +503,10 @@ def add_exemption(request):
         # is not available for any DSS talks.
         events = Event.objects.filter(semester=semester)
         for e in events:
-            talk_preference, created = TalkPreference.objects.get_or_create(student=student, event=e, preference='cannot')
+            talk_preference, created = TalkPreference.objects.get_or_create(student=student, event=e,  defaults={'preference': 'cannot'})
+            if not created:
+                talk_preference.preference = 'cannot'
+                
             talk_preference.save()
         
         

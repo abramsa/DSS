@@ -58,18 +58,18 @@
 				<div class="event_description">
 			
 					<p>
-						<input id="{{event.id}}prefer" type="radio" name="{{event.id}}preference" value="prefer"/> 
+						<input id="{{event.id}}prefer" type="radio" name="{{event.id}}preference" value="prefer" {% ifequals e.pref "prefer" %} checked {% endif %}/> 
 						<label for="{{event.id}}prefer"> I <span class="prefer">prefer</span> to give my talk this date. </label> 
 					</p>
 				
 					<p>
-						<input id="{{event.id}}available" type="radio" name="{{event.id}}preference" value="available" checked/> 
+						<input id="{{event.id}}available" type="radio" name="{{event.id}}preference" value="available" {% ifequals e.pref "available" %} checked {% endif %}/> 
 						<label for="{{event.id}}available"> I am available to give my talk this date. </label> 
 					</p>
 				
 					
 					<p>
-						<input id="{{event.id}}cannot" type="radio" name="{{event.id}}preference" value="cannot"/> 
+						<input id="{{event.id}}cannot" type="radio" name="{{event.id}}preference" value="cannot" {% ifequals e.pref "cannot" %} checked {% endif %}/> 
 						<label for="{{event.id}}cannot"> I <span class="reject">cannot</span> give my talk this date. </label>
 					</p>
 
