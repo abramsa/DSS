@@ -112,8 +112,7 @@ DSS co-chairs""")
                 while match:
                     advisor_id = int(match.groups()[1])
                     advisor_name = match.groups()[2]
-                    #advisor_email = match.groups()[3]
-                    advisor_email = 'austin.abrams@gmail.com'
+                    advisor_email = match.groups()[3]
                     advisor_active = match.groups()[4] == '1'
                     
                     new_advisor = Advisor(id=advisor_id, name=advisor_name, email=advisor_email, active=advisor_active)
