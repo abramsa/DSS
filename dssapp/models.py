@@ -100,7 +100,11 @@ class Talk(models.Model):
         return None
             
     def __str__(self):
-        return self.student.name + "'s Talk on " + self.event_set.get().timestamp.strftime('%b %d, %Y')
+        try:
+            event = self.event_set.get()
+            return self.student.name + "'s Talk on " + event.timestamp.strftime('%b %d, %Y')
+        except Event.DoesNotExist:
+            return self.student.name + "'s Talk"
 
 class Exemption(models.Model):
     student = models.ForeignKey(Student)
