@@ -76,6 +76,8 @@ def schedule_semester_students(semester, students):
     print_matrix(cost_matrix)
 
     for row, column in indexes:
+        if cost_matrix[row][column] == PREFERENCE_TO_COST['cannot']:
+            continue
         print "Scheduling student", dss_students[row], "for talk on", schedulable[column].timestamp
         talk = Talk(student=dss_students[row], order=1)
         talk.save()
