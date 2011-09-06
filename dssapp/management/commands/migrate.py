@@ -115,7 +115,7 @@ DSS co-chairs""")
                     advisor_email = match.groups()[3]
                     advisor_active = match.groups()[4] == '1'
                     
-                    new_advisor = Advisor(id=advisor_id, name=advisor_name, email=advisor_email, active=advisor_active)
+                    new_advisor,created = Advisor.objects.get_or_create(id=advisor_id, name=advisor_name, email=advisor_email, active=advisor_active)
                     new_advisor.save()
                     print "Added advisor", advisor_name, ", id #", advisor_id
                     

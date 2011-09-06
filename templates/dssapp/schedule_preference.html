@@ -56,7 +56,6 @@
 				<div class="clear"> </div>
 			
 				<div class="event_description">
-					{{event.pref}}
 					<p>
 						<input id="{{event.id}}prefer" type="radio" name="{{event.id}}preference" value="prefer" {% ifequal event.pref "prefer" %} checked {% endifequal %}/> 
 						<label for="{{event.id}}prefer"> I <span class="prefer">prefer</span> to give my talk this date. </label> 

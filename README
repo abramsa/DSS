@@ -76,6 +76,11 @@ a 6-pack of Blue Moon, Newcastle Brown Ale, or Schlafly Pale Ale as thanks.
 
 Here are the steps to create a DSS schedule:
 
+0. Back up the database, using the following commands:
+   > ssh username@ssh.seas.wustl.edu
+   > cd /research-www/engineering/dss.cse/dss
+   > mysqldump --host=myresdb.seas.wustl.edu --user=dss --password=sql4dss! --databases dss_web > dump_mm_dd_yy.txt
+
 1. Log into your superuser account by going to
 
    http://dss.cse.wustl.edu/admin
@@ -112,6 +117,8 @@ Here are the steps to create a DSS schedule:
    "Create/Modify/Delete Advisors" to update that.  For sake of database 
    consistency, do not delete anybody, but instead mark them as inactive.  They
    were someone's advisor at some point.
+
+   For a student's web key, generate a random 9-digit number.
 
 5. Go back to the admin page and click on "Email/Schedule Students".  This has
    a listing of all the active students in the department, along with their 
