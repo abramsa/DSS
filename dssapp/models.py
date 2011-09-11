@@ -114,11 +114,11 @@ class Exemption(models.Model):
 class Event(models.Model):
     timestamp = models.DateTimeField(null=True)
     semester = models.ForeignKey(Semester)
-    title = models.CharField(null=True, max_length=100, default='', required=False)
+    title = models.CharField(null=True, max_length=100, default='')
     event_type = models.CharField(null=False, max_length=100)
     
-    talks = models.ManyToManyField(Talk, required=False)
-    judges = models.ManyToManyField(Advisor, required=False)
+    talks = models.ManyToManyField(Talk, null=True)
+    judges = models.ManyToManyField(Advisor, null=True)
     
     def __str__(self):
         return self.event_type + " on " + self.timestamp.strftime('%b %d %Y ')
