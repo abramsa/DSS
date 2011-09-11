@@ -117,8 +117,8 @@ class Event(models.Model):
     title = models.CharField(null=True, max_length=100, default='')
     event_type = models.CharField(null=False, max_length=100)
     
-    talks = models.ManyToManyField(Talk)
-    judges = models.ManyToManyField(Advisor)
+    talks = models.ManyToManyField(Talk, required=False)
+    judges = models.ManyToManyField(Advisor, required=False)
     
     def __str__(self):
         return self.event_type + " on " + self.timestamp.strftime('%b %d %Y ')
