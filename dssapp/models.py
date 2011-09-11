@@ -114,7 +114,7 @@ class Exemption(models.Model):
 class Event(models.Model):
     timestamp = models.DateTimeField(null=True)
     semester = models.ForeignKey(Semester)
-    title = models.CharField(null=True, max_length=100, default='')
+    title = models.CharField(null=True, max_length=100, default='', required=False)
     event_type = models.CharField(null=False, max_length=100)
     
     talks = models.ManyToManyField(Talk, required=False)
