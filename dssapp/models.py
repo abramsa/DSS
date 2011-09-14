@@ -82,7 +82,7 @@ class Talk(models.Model):
     abstract = models.TextField(null=True, default=None)
     
     def abstract_name(self):
-        return self.abstract.replace(r'\n','<br/>').replace('\\\'','\'' )
+        return '' if not self.abstract else self.abstract.replace(r'\n','<br/>').replace('\\\'','\'' )
         
     def file_name(self):
         event = self.event_set.get()
