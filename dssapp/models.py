@@ -105,6 +105,8 @@ class Talk(models.Model):
             return self.student.name + "'s Talk on " + event.timestamp.strftime('%b %d, %Y')
         except Event.DoesNotExist:
             return self.student.name + "'s Talk"
+        except Event.MultipleObjectsReturned:
+            return self.student.name + "'s Talk on multiple events"
 
 class Exemption(models.Model):
     student = models.ForeignKey(Student)
