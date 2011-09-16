@@ -133,6 +133,7 @@ Your friendly DSS chairs"""
             # If this is a Hot Topics event, you should probably email them yourself.
             # There's just too much variability in one of these events that we can't
             # really boilerplate it.
+            print "Hot Topics...send it yourself!"
             return
         
         elif event.event_type == 'DSS':
@@ -171,6 +172,7 @@ Your friendly DSS chairs
                 
         email = EmailMessage(email_subject, email_content, to=to)
         email.send()
+        print "Sent to", to
 
 
     def send_pizza_order(self):
@@ -216,6 +218,7 @@ Our order is for 13 pizzas, all large original crust:
 Thanks,
 {{chairs}}
 """)
+            template.save()
         email_content = Template(template.template).render(Context({'student': None, 'chairs': settings.DSS_CHAIRS, 'semester': most_recent_semester()}))
         
         email = EmailMessage(template.subject, email_content, to=to)
