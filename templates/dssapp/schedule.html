@@ -51,7 +51,7 @@
 			<div class="clear"></div>
 			
 			<div class="event_description">
-				{% ifequal event.event_type "DSS" %}
+				{% ifnotequal event.event_type "Break" %}
 				<div class="speakers">
 					<!-- Speakers: -->
 					{% for talk in event.talks.all %}
@@ -83,7 +83,7 @@
 					{% endfor %}
 				</div>
 				
-				
+				{% ifequal event.event_type "DSS" %}
 				<div class="judges">
 					Judges:
 					{% for judge in event.judges.all %}
@@ -92,9 +92,11 @@
 						</div>
 					{% endfor %}
 				</div>
+				{% endifequal %}
+				
 				<div class="clear"></div>
 				
-				{% endifequal %}
+				{% endifnotequal %}
 				
 				{% ifequal event.event_type "Break" %}
 					{% if event.title %}
