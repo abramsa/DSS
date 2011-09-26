@@ -90,8 +90,8 @@ class Command(BaseCommand):
             
             email_content = Template(template.template).render(Context({'student': student, 'chairs': settings.DSS_CHAIRS, 'semester': most_recent_semester()}))
         
-            #to = [student.email]
-            to = ['austin.abrams@gmail.com']
+            to = [student.email]
+           
         
             email = EmailMessage(template.subject, email_content, to=to)
             email.send()
@@ -117,10 +117,14 @@ class Command(BaseCommand):
         event = events[0]
         
         # to = [grads@cse.wustl.edu, csf@cse.wustl.edu]
-        to = ['austin.abrams@gmail.com']
-        
+        #to = ['austin.abrams@gmail.com']
+	to = ['jayme@seas.wustl.edu']        
+
         if event.event_type == 'Break':
             email_content = """
+Can you forward the following to grads@cse.wustl.edu and csf@cse.wustl.edu?  Thanks!
+-------------------------
+
 Dear students and faculty,
 
 There will be no DSS event this week due to """ + event.break_name + """.
@@ -140,10 +144,11 @@ Your friendly DSS chairs"""
             email_subject = "DSS Talks Friday"
             
             email_content = """
+Can you forward this DSS reminder to grads@cse.wustl.edu and csf@cse.wustl.edu? Thanks!
+
 All,
 
-The following DSS talks will be held starting at 12:30.
-Food and refreshments will be provided.
+The following DSS talks will be held this Friday starting at 12:30 in Lopata 101. Food and refreshments will be provided.
 
 Thanks,
 Your friendly DSS chairs
