@@ -15,9 +15,11 @@ class Semester(models.Model):
         seasons = {1: "Spring", 6: "Summer", 9: "Fall", 12: "Winter"}
         if self.month in seasons:
             return seasons[self.month]
-        else:
+        elif self.month > 0 and self.month <= 12:
             d = datetime(month=self.month, year=self.year, day=1)
             return d.strftime('%B')
+        else:
+            return "UNKNOWN SEASON:: month is " + str(self.month)
     def __str__(self):
         return self.season() + " " + str(self.year)
 

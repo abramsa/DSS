@@ -29,6 +29,7 @@ class Command(BaseCommand):
         elif day == FRIDAY:
             self.send_weekly_notice()
             self.send_pizza_order()
+            self.send_judge_reminder()
         else:
             print "No emails to send today!"
             
@@ -54,9 +55,6 @@ class Command(BaseCommand):
         
         for student in students:
             email_content = Template(template.template).render(Context({'student': student, 'chairs': settings.DSS_CHAIRS, 'semester': most_recent_semester()}))
-        
-            #to = [student.email]
-            to = ['austin.abrams@gmail.com']
         
             email = EmailMessage(template.subject, email_content, to=[student.email])
             email.send()
@@ -101,7 +99,34 @@ class Command(BaseCommand):
             
             print "sent to ", student.email
             
-        
+    def send_judge_reminder(self):
+        print "Sending judge reminders"
+        today = datetime.now()
+        next_week = today + timedelta(days=7)
+        events = Event.objects.filter(timestamp__gt=today, timestamp__lt=next_week)
+        if len(events) == 0:
+            print "No events!"
+            return
+        event = events[0]
+        if event.event_type == 'DSS':
+            try:
+                template = EmailTemplate.objects.get(name='JudgeReminder')
+            except EmailTemplate.DoesNotExist:
+                template = EmailTemplate(name='JudgeReminder', subject='DSS Today', template="""
+As a reminder, you are scheduled to judge DSS talks today.  Please remember to fill out a faculty evaluation form during today's talks.
+
+Thanks!
+{{chairs}}
+DSS Chairs
+""")
+                template.save()
+            to = [judge.email for judge in event.judges.all()]
+            email_content = Template(template.template).render(Context({'chairs' : settings.DSS_CHAIRS}))
+            email = EmailMessage(template.subject, email_content, to=to)
+            email.send()
+            print "sent reminder to", to
+
+
     def send_weekly_notice(self):
         print "Sending weekly notice..."
         # send out an email to all active, nonexempt, and in-STL students, and all active faculty
@@ -196,8 +221,7 @@ Your friendly DSS chairs
             print "It's a break!"
             return
 
-        # to = ["eckmank@seas.wustl.edu"]
-        to = ['austin.abrams@gmail.com']
+        to = ["eckmank@seas.wustl.edu"]
 
         try:
             template = EmailTemplate.objects.get(name='PizzaOrder')

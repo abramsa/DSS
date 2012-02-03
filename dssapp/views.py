@@ -131,7 +131,7 @@ def student_dashboard(request):
 		if s.most_recent_email and s.most_recent_email.email.name == 'SubmitPrefs':
 			prefs = TalkPreference.objects.filter(student=s, event__semester=most_recent_semester())
 			s.responded = TalkPreference.objects.filter(student=s, event__semester=most_recent_semester()).exists()
-		elif s.most_recent_email and s.most_recent_email.email.name == 'SubmitAbstract':
+		elif s.most_recent_email and s.most_recent_email.email.name == 'SubmitAbstract' and s.next_talk():
 			s.responded = s.next_talk().abstract != None
 		else:
 			s.responded = None
@@ -177,8 +177,7 @@ def schedule_students(request):
 			student_id = int(param.replace('box', ''))
 			students.append(Student.objects.get(id=student_id))
 			
-	semester_str = '2011.09'
-	semester = string_to_semester(semester_str)
+	semester = most_recent_semester()
 	
 	schedule_semester_students(semester, students)
 	
