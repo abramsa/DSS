@@ -171,6 +171,12 @@ def sort_by_last_name(students):
 def most_recent_semester():
     return Semester.objects.order_by('-year','-month')[0]  
         
+def most_recent_occupied_semester():
+    semesters = Semester.objects.order_by('-year', '-month')
+    occupied = [s for s in semesters if s.event_set.count() > 0]
+    return occupied[0]
+    
+        
 def exemption_status(student):
     my_exemptions = Exemption.objects.filter(student=student)
     if not my_exemptions:

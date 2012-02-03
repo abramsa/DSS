@@ -25,7 +25,7 @@ def schedule(request):
 		events = Event.objects.filter(semester=semester).order_by('timestamp')
 		
 	else:
-		semester = most_recent_semester()
+		semester = most_recent_occupied_semester()
 		return HttpResponseRedirect('schedule?semester=' + str(semester.year) + '.' + str(semester.month))
 	   
 	
