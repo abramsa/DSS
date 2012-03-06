@@ -2,7 +2,6 @@ from django.template import Template, Context, RequestContext, TemplateSyntaxErr
 from dss.dssapp import *
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
 from util import *
 from datetime import *
 from django.core.mail import EmailMessage
@@ -329,11 +328,7 @@ def upload(request):
 	
 	return render_to_response('dssapp/upload.html', {'talks': talks, 'form': form},
 								context_instance=RequestContext(request))
-
-# uploads a video to the server and gives it the right naming convention.
-# I really want this to use CSRF, but for some unknown reason, we're getting
-# CSRF warnings on the server and not on development...
-@csrf_exempt
+	
 def upload_video(request):
 	if not request.user.is_authenticated():
 		return HttpResponseRedirect('message?msg=permissions')

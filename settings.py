@@ -6,9 +6,6 @@ DSS_CHAIR_EMAILS = ['wuchengjievip@gmail.com', 'pengli@go.wustl.edu']
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-import os
-IN_DEVELOPMENT = os.uname()[1].startswith('csemac')
-
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
@@ -17,8 +14,12 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'dssdb',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'dss_web',                      # Or path to database file if using sqlite3.
+        'USER': 'dss',                      # Not used with sqlite3.
+        'PASSWORD': 'sql4dss!',                  # Not used with sqlite3.
+        'HOST': 'myresdb.seas.wustl.edu',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -49,7 +50,7 @@ USE_L10N = True
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = '/research-www/engineering/dss.cse/local/lib/python2.7/site-packages/django/contrib/admin/'
 STATIC_ROOT = '/research-www/engineering/dss.cse/dss/static/'
-VIDEO_ROOT = '/project/cse-video/dsstalks/' if not IN_DEVELOPMENT else '/Users/cseuser/Projects/dss/videos/'
+VIDEO_ROOT = '/project/cse-video/dsstalks/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -91,7 +92,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/Users/cseuser/Projects/dss/templates/'
+    '/research-www/engineering/dss.cse/dss/templates'
 )
 
 INSTALLED_APPS = (
