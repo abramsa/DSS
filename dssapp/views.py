@@ -318,7 +318,11 @@ def message(request):
     return render_to_response('dssapp/message.html', {'message': messages[msg_type]})
    
 class DSSVideoForm(forms.Form):
-    video = forms.FileField(required=True)    
+    def my_upload_directory(instance, filename):
+        extension = video.name[video.name.find('.'):]
+        return settings.VIDEO_ROOT + 'tmp' + extension
+        
+    video = forms.FileField(upload_to=my_upload_directory)    
  
 def upload(request):
     if not request.user.is_authenticated():
@@ -330,12 +334,9 @@ def upload(request):
             video = request.FILES['video']
 
             extension = video.name[video.name.find('.'):]
+            tmp_file = settings.VIDEO_ROOT + 'tmp' + extension
             file_name = settings.VIDEO_ROOT + talk.file_name() + extension
-
-            destination = open(file_name, 'wb+')
-            for chunk in video.chunks():
-                destination.write(chunk)
-            destination.close()
+            os.rename(tmp_file, file_name)
             
             return HttpResponseRedirect('schedule')
         else:
