@@ -331,6 +331,9 @@ def upload(request):
                                 context_instance=RequestContext(request))
 
 # uploads a video to the server and gives it the right naming convention.
+# I really want this to use CSRF, but for some unknown reason, we're getting
+# CSRF warnings on the server and not on development...
+@csrf_exempt
 def upload_video(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('message?msg=permissions')
