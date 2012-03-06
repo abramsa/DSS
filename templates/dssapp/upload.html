@@ -12,7 +12,7 @@
 		
 {% block content %}
 
-	<form method="post" action="upload_video" enctype="multipart/form-data">
+	<form method="post" action="upload" >
 		{% csrf_token %}
 		<p>
 			Upload a video: {{form}}

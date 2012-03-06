@@ -318,44 +318,37 @@ def message(request):
     return render_to_response('dssapp/message.html', {'message': messages[msg_type]})
    
 class DSSVideoForm(forms.Form):
-    video = forms.FileField()    
+    video = forms.FileField(required=True)    
  
 def upload(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('message?msg=permissions')
     
+    if request.method == 'POST':
+        form = DSSVideoForm(request.POST, request.FILES)
+        if form.is_valid():
+            video = request.FILES['video']
+
+            extension = video.name[video.name.find('.'):]
+            file_name = settings.VIDEO_ROOT + talk.file_name() + extension
+
+            destination = open(file_name, 'wb+')
+            for chunk in video.chunks():
+                destination.write(chunk)
+            destination.close()
+            
+            return HttpResponseRedirect('schedule')
+        else:
+            raise SomeKindaError()
+            
+    else:
+        form = DSSVideoForm()
+    
     talks = Talk.objects.all().order_by('-id')[0:25]
-    form = DSSVideoForm()
     
     return render_to_response('dssapp/upload.html', {'talks': talks, 'form': form},
                                 context_instance=RequestContext(request))
 
-# uploads a video to the server and gives it the right naming convention.
-# I really want this to use CSRF, but for some unknown reason, we're getting
-# CSRF warnings on the server and not on development...
-@csrf_exempt
-def upload_video(request):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('message?msg=permissions')
-    talk_id = int(request.POST['talk_id'])
-    talk = Talk.objects.get(id=talk_id)
-
-
-
-    form = DSSVideoForm(request.POST, request.FILES)
-    if form.is_valid():
-        video = request.FILES['video']
-
-        extension = video.name[video.name.find('.'):]
-        file_name = settings.VIDEO_ROOT + talk.file_name() + extension
-
-        destination = open(file_name, 'wb+')
-        for chunk in video.chunks():
-            destination.write(chunk)
-        destination.close()
-    else:
-        raise ValueException('For some reason the form was not valid.')
-    return HttpResponseRedirect('schedule')
 
 
 def admin(request):
