@@ -146,7 +146,10 @@ class EmailTemplate(models.Model):
     template = models.TextField()
     subject = models.CharField(max_length=200)
     name = models.CharField(max_length=200)
-    
+
+    def __str__(self):
+        return self.name
+
 class EmailSent(models.Model):
     student = models.ForeignKey(Student)
     email = models.ForeignKey(EmailTemplate)
