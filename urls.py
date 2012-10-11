@@ -15,8 +15,8 @@ urlpatterns = patterns('',
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    (r'^admin$', dssapp.views.admin),
-    (r'^manage/', include(admin.site.urls)),
+    (r'^admin/?$', dssapp.views.admin),
+    (r'^manage/?', include(admin.site.urls)),
     
     (r'^student/(?P<student_id>\d+)$', dssapp.views.view_student),
     
@@ -49,6 +49,4 @@ urlpatterns = patterns('',
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
                 'document_root': settings.STATIC_ROOT,
             }),
-    url(r'^admin_media/(?P<path>.*)$', 'django.views.static.serve', {
-                'document_root': '/research-www/engineering/dss.cse/local/lib/python2.7/site-packages/django/contrib/admin/media/'}),
 )
