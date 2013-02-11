@@ -23,6 +23,7 @@
 
 
 {% block content %}
+
 	{% for talk in student.talk_set.all %}
 		<div class="event">
 			<h2>{{talk.title}}</h2>
@@ -51,4 +52,9 @@
 			</div>
 		</div>
 	{% endfor %}
+	
+	<p> Looking for your talk? 
+	    <a href="http://medialibrary.artsci.wustl.edu/taxonomy/term/29">It may be available at the Arts &amp; Sciences Media Library</a>.
+	</p>
+	
 {% endblock %}
